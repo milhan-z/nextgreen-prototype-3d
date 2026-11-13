@@ -1,0 +1,263 @@
+{
+ "params": {
+  "L": 6000,
+  "W": 3000,
+  "H_EAVE": 1900,
+  "H_RIDGE": 2600,
+  "BAY": 1200,
+  "TUBE": 40,
+  "ROOF_OVER": 100,
+  "GUT_R": 55,
+  "DP_R": 32,
+  "FF_R": 55,
+  "FF_LEN": 1200,
+  "TANK_R": 550,
+  "TANK_H": 1350,
+  "TANK_BASE": 150,
+  "TANK_XY": [
+   7100,
+   2350
+  ],
+  "TAP_Z": 400,
+  "ZC": 1700,
+  "DRUM_R": 290,
+  "DRUM_H": 880,
+  "DRUM_XY": [
+   5620,
+   2560
+  ],
+  "RES_R": 400,
+  "RES_D": 600,
+  "RES_XY": [
+   5500,
+   1750
+  ],
+  "ROWS": [
+   850,
+   2150
+  ],
+  "N_PER_ROW": 12,
+  "X0": 450,
+  "DX": 380,
+  "BKT_TOP": 300,
+  "BKT_BOT": 250,
+  "BKT_H": 320,
+  "RET_R": 32,
+  "PE_R": 8,
+  "MICRO_R": 2.5,
+  "PE_Z": 440,
+  "WIRE_Z": 1750
+ },
+ "parts": [
+  {
+   "name": "Rangka baja ringan galvanis (sudah ada)",
+   "group": "frame",
+   "color": "frame"
+  },
+  {
+   "name": "Engsel pintu",
+   "group": "frame",
+   "color": "pumpbody"
+  },
+  {
+   "name": "Atap plastik UV bening (selatan)",
+   "group": "cover",
+   "color": "roof"
+  },
+  {
+   "name": "Atap plastik UV bening (utara)",
+   "group": "cover",
+   "color": "roof"
+  },
+  {
+   "name": "Dinding kasa insect net",
+   "group": "cover",
+   "color": "net"
+  },
+  {
+   "name": "Alas mulsa anyaman hitam",
+   "group": "existing",
+   "color": "mat"
+  },
+  {
+   "name": "Tutup bak lantai abu abu (sudah ada)",
+   "group": "reslid",
+   "color": "reslid"
+  },
+  {
+   "name": "Bak lantai bagian tertanam",
+   "group": "existing",
+   "color": "concrete"
+  },
+  {
+   "name": "Ember Dutch Bucket (sudah ada)",
+   "group": "existing",
+   "color": "bucket"
+  },
+  {
+   "name": "Tutup ember",
+   "group": "existing",
+   "color": "lid"
+  },
+  {
+   "name": "Pipa balik PVC putih ~2 inch (sudah ada)",
+   "group": "existing",
+   "color": "pvc"
+  },
+  {
+   "name": "Selang PE hitam 16 mm (sudah ada)",
+   "group": "existing",
+   "color": "pe"
+  },
+  {
+   "name": "Selang mikro tetes (sudah ada)",
+   "group": "existing",
+   "color": "pe"
+  },
+  {
+   "name": "Ajir bambu (sudah ada)",
+   "group": "existing",
+   "color": "bamboo"
+  },
+  {
+   "name": "Kawat penyangga",
+   "group": "existing",
+   "color": "frame"
+  },
+  {
+   "name": "Batang melon",
+   "group": "plant",
+   "color": "plant"
+  },
+  {
+   "name": "Daun melon",
+   "group": "plant",
+   "color": "plant"
+  },
+  {
+   "name": "Buah melon",
+   "group": "plant",
+   "color": "melon"
+  },
+  {
+   "name": "Tong biru ~200 L (sudah ada)",
+   "group": "existing",
+   "color": "drum"
+  },
+  {
+   "name": "Pipa isi PVC putih dari atas (sudah ada)",
+   "group": "existing",
+   "color": "pvc"
+  },
+  {
+   "name": "Pipa keluar tong ke bak (sudah ada)",
+   "group": "existing",
+   "color": "pvc"
+  },
+  {
+   "name": "Ball valve gagang merah (sudah ada)",
+   "group": "existing",
+   "color": "valve"
+  },
+  {
+   "name": "Pompa celup (perkiraan, sudah ada)",
+   "group": "existing",
+   "color": "pumpbody"
+  },
+  {
+   "name": "Kabel listrik pompa (sudah ada)",
+   "group": "existing",
+   "color": "cable"
+  },
+  {
+   "name": "Selang taman (isi manual, perkiraan)",
+   "group": "existing",
+   "color": "hose"
+  },
+  {
+   "name": "Talang PVC (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Kasa talang ~1 mm dan gantungan (baru)",
+   "group": "new",
+   "color": "filter"
+  },
+  {
+   "name": "Pipa turun dan pipa ke tandon (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "First flush ~9 L (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Alas beton tandon (baru)",
+   "group": "new",
+   "color": "concrete"
+  },
+  {
+   "name": "Tandon tertutup kelas 1.100 L (baru)",
+   "group": "new",
+   "color": "tank"
+  },
+  {
+   "name": "Tutup tandon",
+   "group": "new",
+   "color": "tank"
+  },
+  {
+   "name": "Lubang angin berkasa (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Pipa pelimpah (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Kran keluar di atas dasar (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Housing filter 120 sampai 200 mesh (baru)",
+   "group": "new",
+   "color": "filter"
+  },
+  {
+   "name": "Pipa ke bak lantai (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Kran sampel (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Meja cek air (baru)",
+   "group": "new",
+   "color": "table"
+  },
+  {
+   "name": "pH meter, TDS pen, gelas sampel (baru)",
+   "group": "new",
+   "color": "meter"
+  },
+  {
+   "name": "Tutup tong (usulan, aslinya terbuka)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Tanah",
+   "group": "site",
+   "color": "ground"
+  }
+ ]
+}

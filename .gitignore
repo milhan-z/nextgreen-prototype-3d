@@ -1,0 +1,7 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+src/hlr_cache.pkl
+web/bundle.js
+web/glb_data.js
