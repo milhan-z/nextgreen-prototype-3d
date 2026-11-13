@@ -67,12 +67,13 @@ Semua angka ini perkiraan dari foto/video, belum diukur di lapangan:
 - Model ini ilustrasi buat proposal, bukan gambar kerja konstruksi. Satu dari tiga greenhouse.
 
 ## Catatan soal file di repo
-Alat upload yang aku pakai cuma bisa kirim file teks, jadi file biner (PNG, PDF, GLB, STL) di repo ini disimpan sebagai gzip + base64 di folder `b64/`. Workflow GitHub Actions (`.github/workflows/pages.yml`) membongkar file itu lagi waktu deploy ke GitHub Pages, jadi versi aslinya bisa diunduh langsung dari situs:
+Alat upload yang aku pakai cuma bisa kirim file teks dengan ukuran terbatas, jadi file besar (index.html, STEP) dan file biner (PNG, PDF, GLB, STL) di repo ini disimpan sebagai gzip + base64 di folder `b64/`. Workflow GitHub Actions (`.github/workflows/pages.yml`) membongkar file itu lagi waktu deploy ke GitHub Pages, jadi versi aslinya bisa diunduh langsung dari situs:
 - https://milhan-z.github.io/nextgreen-prototype-3d/gambar-teknik-A3.pdf
 - https://milhan-z.github.io/nextgreen-prototype-3d/render-1-overview.png
 - https://milhan-z.github.io/nextgreen-prototype-3d/render-6-sudut-tong.png
 - https://milhan-z.github.io/nextgreen-prototype-3d/prototype.glb
 - https://milhan-z.github.io/nextgreen-prototype-3d/prototype.stl
+- https://milhan-z.github.io/nextgreen-prototype-3d/prototype.step
 
 Kalau mau bongkar sendiri: `base64 -d b64/NAMA.gz.b64 | gunzip > NAMA`
 
