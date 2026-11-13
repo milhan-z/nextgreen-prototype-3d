@@ -1,0 +1,32 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Prototype Sistem Air Hujan Greenhouse Melon KWT</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Inter","Segoe UI",Roboto,Arial,sans-serif;color:#1d2327}
+body{background:radial-gradient(ellipse at 50% 35%,#f7f8fa 0%,#e6e9ed 70%,#dadee3 100%)}
+#view,#labels,#leaders{position:absolute;inset:0}
+#labels{pointer-events:none}#leaders{pointer-events:none;width:100%;height:100%}
+#leaders line{stroke:#1d2327;stroke-width:1.6}#leaders circle{fill:#00857e;stroke:#fff;stroke-width:1.5}
+#leaders line.sub{stroke:#5b636b;stroke-dasharray:4 3}#leaders circle.sub{fill:#5b636b}
+.callout{position:absolute;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.94);border:1.5px solid #1d2327;border-radius:6px;padding:6px 10px 6px 6px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.callout .num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#00857e;color:#fff;font-weight:700;font-size:16px}
+.callout .txt{display:flex;flex-direction:column;line-height:1.15}.callout b{font-size:17px;font-weight:650}.callout i{font-style:normal;font-size:13.5px;color:#4b545c;margin-top:2px}
+.callout.sub{border-color:#7b838b;border-style:dashed;padding:4px 9px}.callout.sub b{font-size:14.5px;font-weight:550;color:#333a40}
+#title{position:absolute;left:24px;top:18px;pointer-events:none;background:rgba(247,248,250,.88);padding:10px 14px;border-radius:8px}
+#title h1{margin:0;font-size:34px;font-weight:750;letter-spacing:-.3px}
+#title p{margin:6px 0 0;font-size:16px;color:#4b545c}
+#legend{position:absolute;left:24px;bottom:52px;background:rgba(247,248,250,.9);padding:6px 12px;border-radius:6px;display:flex;gap:18px;font-size:14.5px;color:#333a40;pointer-events:none}
+#legend span{display:flex;align-items:center;gap:7px}#legend em{display:inline-block;width:22px;height:12px;border-radius:2px;border:1px solid #333}
+#foot{position:absolute;left:24px;bottom:18px;background:rgba(247,248,250,.9);padding:5px 12px;border-radius:6px;font-size:13.5px;color:#5b636b;pointer-events:none}
+#ui{position:absolute;right:20px;top:20px;background:rgba(255,255,255,.92);border:1px solid #c9ced3;border-radius:8px;padding:10px 12px;font-size:13px;display:flex;flex-direction:column;gap:6px}
+#ui .row{display:flex;gap:6px;flex-wrap:wrap}#ui button{border:1px solid #9aa1a8;background:#fff;border-radius:5px;padding:5px 9px;cursor:pointer;font-size:13px}#ui button.on{background:#00857e;color:#fff;border-color:#00857e}
+body.render #ui{display:none}
+body.clean #title,body.clean #legend,body.clean #foot,body.clean #note{display:none}body.clean .callout .txt{display:none}body.clean .callout{padding:3px;border-radius:50%}body.clean .callout .num{width:44px;height:44px;font-size:24px}
+</style></head><body>
+<div id="view"></div><svg id="leaders"></svg><div id="labels"></div>
+<div id="title"><h1>Prototype Sistem Air Hujan Greenhouse Melon KWT</h1><p>KWT Pasir Wetan, Karanglewas, Banyumas. 1 dari 3 greenhouse, tapak 3 x 6 m</p></div>
+<div id="note" style="position:absolute;left:24px;top:112px;font-size:15px;background:rgba(247,248,250,.88);padding:4px 12px;border-radius:6px;color:#00665f;font-weight:600;pointer-events:none"></div><div id="legend"><span><em style="background:#009e94"></em>Sistem air hujan (usulan baru)</span><span><em style="background:#1a5cc7"></em>Sudah ada di lokasi (dari video)</span><span><em style="background:#19c3e6;border-radius:50%;width:12px"></em>Arah aliran air</span></div>
+<div id="foot">Model ilustratif, disesuaikan dengan video 13 Nov 2026. Semua ukuran perkiraan dari video, belum diukur. Ember disederhanakan (24 ditampilkan, aslinya sekitar 60 sampai 66).</div>
+<div id="ui"><b>Tampilan</b><div class="row"><button data-v="overview">Keseluruhan</button><button data-v="side">Samping</button><button data-v="interior">Dalam</button><button data-v="station">Stasiun air</button><button data-v="corner">Sudut tong</button></div>
+<label><input type="checkbox" id="tLabels" checked> Label</label><label><input type="checkbox" id="tFlow" checked> Aliran air</label>
+<label><input type="checkbox" id="tCover" checked> Atap dan kasa</label><label><input type="checkbox" id="tPlant" checked> Tanaman</label><span style="color:#6b737b">Geser untuk memutar, scroll untuk zoom</span></div>
+<script>/*BUNDLE*/</script></body></html>

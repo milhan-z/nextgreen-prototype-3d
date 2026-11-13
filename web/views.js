@@ -1,0 +1,14 @@
+// posisi kamera (meter, Y ke atas, Z = -y model) dan offset label (px)
+export default {
+  overview: { pos: [11.2, 7.4, -9.6], tgt: [4.2, 0.35, -1.5], fov: 34, show: [1, 2, 3, 4, 5, 6, 7, 8, 'a'],
+    off: { 1: [180, -50], 2: [-300, -60], 3: [-330, -170], 6: [-220, 40], 4: [-250, 170], 5: [380, 90], 7: [360, 30], 8: [220, -150], a: [300, -10] } },
+  side: { pos: [8.4, 2.1, 4.6], tgt: [6.3, 0.9, -1.6], fov: 40, show: [2, 3, 4, 5, 'b', 'c', 'd'],
+    off: { 2: [-300, -160], c: [-260, -120], 3: [-330, -20], 4: [300, -220], b: [250, 60], d: [-300, 120], 5: [-300, 220] } },
+  interior: { pos: [0.5, 1.6, -1.5], tgt: [5.2, 0.35, -1.85], fov: 50, show: [7, 8, 'e', 'h', 'g', 'j'], hide: ['cover'],
+    off: { 7: [-330, -170], 8: [-300, 200], e: [260, 140], h: [-300, 120], g: [280, -40], j: [300, -60] }, note: 'Tampilan potongan: atap dan kasa disembunyikan agar isi terlihat' },
+  station: { pos: [9.0, 3.6, 2.2], tgt: [6.0, 0.5, -1.9], fov: 40, show: [3, 4, 5, 6, 7, 'd', 'b'],
+    off: { 3: [-300, -120], 4: [260, -200], 5: [-330, 120], 6: [-250, 120], 7: [-300, -60], d: [260, 120], b: [200, 60] } },
+  corner: { pos: [4.25, 2.9, -0.55], tgt: [5.6, 0.15, -2.15], fov: 42, show: [7, 'e', 'f', 'g', 'h', 'i', 'j'], hide: ['cover', 'reslid', 'plant'],
+    off: { 7: [-300, -60], e: [-360, -40], f: [-330, 160], g: [300, 60], h: [-260, 60], i: [220, -60], j: [240, -110] },
+    note: 'Sudut tong: atap, kasa, tanaman dan tutup bak lantai disembunyikan agar pompa celup terlihat' },
+};
