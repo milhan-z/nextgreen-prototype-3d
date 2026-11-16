@@ -91,7 +91,7 @@ dim((0, 0), (0, HR), -12, "2,60 m (perkiraan)", fs_, horiz=False, fs=6)
 dim((6400 - 150, P["ZC"] - P["FF_LEN"]), (6400 - 150, P["ZC"]), 0, "", fs_, horiz=False)
 ax.text(*fs_(6250, -180), "first flush 1,20 m, pipa Ø110 (~9 L, perkiraan)", fontsize=5.3, ha="left", va="top", color=INK,
         bbox=dict(fc="white", ec="none", pad=0.3))
-dim((8350, 0), (8350, P["TANK_BASE"] + P["TANK_H"]), 4, "1,50 m (perkiraan)", fs_, horiz=False, fs=6)
+dim((8350, 0), (8350, P["TANK_BASE"] + P["TANK_H"]), 4, "1,82 m (perkiraan)", fs_, horiz=False, fs=6)
 vtitle(27, 181, "TAMPAK SAMPING (dari selatan)", "skala 1:50, garis putus = bak lantai dan pompa celup tertanam")
 balloon((2400, 2450), fs_(3600, 3050), 1, fs_)
 balloon((3800, 1800), fs_(4700, 3050), 2, fs_)
@@ -130,7 +130,7 @@ rows = [
     ("1", "Atap 18 m²", "plastik UV bening, 3 x 6 m,\nsudah ada, belum ada talang", "Ada"),
     ("2", "Talang + kasa ~1 mm", "PVC, dua sisi panjang", "Baru"),
     ("3", "First flush (~9 L dibuang)", "0,5 L per m² atap, pipa Ø110", "Baru"),
-    ("4", "Tandon tertutup", "kelas 1.100 L, di luar dinding kasa,\npelimpah, lubang angin, kran di atas dasar", "Baru"),
+    ("4", "2 tandon tertutup", "Filtra 2 x 2.650 L, disambung pipa bawah,\npelimpah, lubang angin, kran di atas dasar", "Baru"),
     ("5", "Filter 120 sampai 200 mesh", "housing sebelum ke bak lantai", "Baru"),
     ("6", "Cek pH dan TDS", "pH meter + TDS pen di meja", "Baru"),
     ("7", "Campur AB mix di tong/bak yang ada", "tong ~200 L sekarang terbuka,\nusulan: diberi tutup", "Ada"),
@@ -165,7 +165,7 @@ ax.text(NX + 4, NY, "CATATAN", fontsize=9, weight="bold", va="bottom")
 notes = [
     "Tapak 3,00 x 6,00 m dan atap 18 m² dari data tim. Tinggi tepi ±1,90 m dan bubungan ±2,60 m perkiraan dari video 13 Nov 2026.",
     "Kondisi yang ada mengikuti video: rangka baja ringan, ember di atas pipa balik PVC, tetes PE 16 mm, tong, bak lantai, pompa.",
-    "Jarak tiang ±1,20 m, ukuran tong (~200 L), bak lantai, pompa celup dan letak tandon diperkirakan dari video, belum diukur.",
+    "Jarak tiang ±1,20 m, ukuran tong (~200 L), bak lantai, pompa celup dan letak tandon diperkirakan dari video, belum diukur. Dimensi tandon Filtra belum ditemukan (dimodelkan Ø1,40 x 1,72 m).",
     "Volume first flush 0,5 L per m² x 18 m² = 9 L (acuan UNDP 2016). Pipa Ø110 sepanjang 1,20 m kira kira 9,4 L.",
     "Ember ditampilkan 24 buah agar gambar jelas (aslinya sekitar 60 sampai 66 tanaman). Tanaman tidak digambar di tampak 2D.",
     "Warna toska = sistem air hujan usulan baru. Warna hitam/abu = kondisi yang sudah ada di lokasi.",
@@ -185,7 +185,7 @@ ax.add_patch(Rectangle((14, 16), 196, 12, fill=False, ec=INK, lw=0.4))
 # ---------------- ALUR AIR ----------------
 FX, FY = 214, 98
 ax.text(FX, FY + 1.5, "ALUR AIR HUJAN", fontsize=9, weight="bold", va="bottom")
-steps = ["Atap 18 m²", "Talang + kasa", "First flush\n~9 L dibuang", "Tandon tertutup", "Filter 120\nsampai 200 mesh", "Cek pH dan TDS", "Campur AB mix\ndi tong/bak", "Ke tanaman\n(tetes)"]
+steps = ["Atap 18 m²", "Talang + kasa", "First flush\n~9 L dibuang", "2 tandon\n2 x 2.650 L", "Filter 120\nsampai 200 mesh", "Cek pH dan TDS", "Campur AB mix\ndi tong/bak", "Ke tanaman\n(tetes)"]
 bw_, bh_, gap = 42, 11, 7
 for i, t in enumerate(steps):
     r, c = divmod(i, 4)

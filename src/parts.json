@@ -11,15 +11,16 @@
   "DP_R": 32,
   "FF_R": 55,
   "FF_LEN": 1200,
-  "TANK_R": 550,
-  "TANK_H": 1350,
-  "TANK_BASE": 150,
+  "TANK_R": 700,
+  "TANK_H": 1720,
+  "TANK_BASE": 100,
   "TANK_XY": [
-   7100,
+   7250,
    2350
   ],
+  "TANK2_Y": 800,
   "TAP_Z": 400,
-  "ZC": 1700,
+  "ZC": 1720,
   "DRUM_R": 290,
   "DRUM_H": 880,
   "DRUM_XY": [
@@ -195,22 +196,47 @@
    "color": "new"
   },
   {
-   "name": "Alas beton tandon (baru)",
+   "name": "Dudukan tandon 1 (batako + semen, baru)",
    "group": "new",
    "color": "concrete"
   },
   {
-   "name": "Tandon tertutup kelas 1.100 L (baru)",
+   "name": "Tandon 1 Filtra 2.650 L (baru)",
    "group": "new",
    "color": "tank"
   },
   {
-   "name": "Tutup tandon",
+   "name": "Tutup tandon 1",
    "group": "new",
    "color": "tank"
   },
   {
-   "name": "Lubang angin berkasa (baru)",
+   "name": "Lubang angin berkasa tandon 1 (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Dudukan tandon 2 (batako + semen, baru)",
+   "group": "new",
+   "color": "concrete"
+  },
+  {
+   "name": "Tandon 2 Filtra 2.650 L (baru)",
+   "group": "new",
+   "color": "tank"
+  },
+  {
+   "name": "Tutup tandon 2",
+   "group": "new",
+   "color": "tank"
+  },
+  {
+   "name": "Lubang angin berkasa tandon 2 (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Pipa sambung antar tandon + stop kran (baru)",
    "group": "new",
    "color": "new"
   },
