@@ -5,3 +5,13 @@ __pycache__/
 src/hlr_cache.pkl
 web/bundle.js
 web/glb_data.js
+
+# file biner hasil build, disimpan sebagai b64/*.gz.b64
+/index.html
+/prototype.glb
+/prototype.step
+/prototype.stl
+/render-*.png
+/gambar-teknik-A3.*
+/ilustrasi-2-tandon.png
+/src/iso-sheet.png
