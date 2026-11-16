@@ -12,7 +12,11 @@ const CLEAN = qs.has('clean');
 const M = (x, y, z) => new THREE.Vector3(x / 1000, z / 1000, -y / 1000); // mm model -> three
 
 const W = window.innerWidth, H = window.innerHeight;
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fail(msg) { const l = document.getElementById('load'); if (l) { l.classList.add('err'); l.innerHTML = `<div><b>Model 3D tidak bisa ditampilkan</b>${msg}</div>`; } }
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); }
+catch (e) { fail('Browser ini tidak menjalankan WebGL. Coba buka di Chrome atau Firefox versi baru, atau lihat gambar render di folder repo.'); throw e; }
 renderer.setPixelRatio(RENDER ? 1 : Math.min(2, devicePixelRatio));
 renderer.setSize(W, H);
 renderer.shadowMap.enabled = true;
@@ -41,9 +45,11 @@ scene.add(sun, sun.target);
 
 const EDGE = { new: 0x00544f, default: 0x2a2e33, cover: 0x8a9096, plant: 0x2f4a26 };
 const groups = {};
+const tankMats = [];
 function bytes(b64) { const s = atob(b64); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; }
 
 new GLTFLoader().parse(bytes(GLB64), '', (gltf) => {
+  document.getElementById('load')?.remove();
   const root = gltf.scene;
   root.traverse((o) => {
     if (!o.isMesh) return;
@@ -59,6 +65,7 @@ new GLTFLoader().parse(bytes(GLB64), '', (gltf) => {
       polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1,
     });
     if (ck === 'new') { mat.emissive = new THREE.Color(0x00a89f); mat.emissiveIntensity = 0.12; }
+    if (ck === 'tank') tankMats.push(mat);
     o.material = mat;
     o.castShadow = !transparent && grp !== 'site';
     o.receiveShadow = true;
@@ -74,20 +81,118 @@ new GLTFLoader().parse(bytes(GLB64), '', (gltf) => {
   scene.add(root);
   setView(cur);
   window.__modelReady = true;
-});
+}, () => fail('File model rusak saat dibaca. Muat ulang halaman, atau unduh ulang index.html dari repo.'));
 
 // ---------- aliran air (partikel) ----------
+const KINDS = GEOM.flowk || GEOM.flow.map(() => 'loop');
 const paths = GEOM.flow.map((pts) => { const cp = new THREE.CurvePath(); for (let i = 0; i < pts.length - 1; i++) cp.add(new THREE.LineCurve3(M(...pts[i]), M(...pts[i + 1]))); return cp; });
 const flowGroup = new THREE.Group(); scene.add(flowGroup);
 const dropGeo = new THREE.SphereGeometry(0.02, 10, 8);
 const dropMat = new THREE.MeshBasicMaterial({ color: 0x19c3e6, depthTest: true });
-const drops = [];
-paths.forEach((cp) => {
+const kindGroups = {};
+paths.forEach((cp, k) => {
+  const kind = KINDS[k]; const g = (kindGroups[kind] ||= new THREE.Group()); flowGroup.add(g);
   const len = cp.getLength(); const n = Math.max(3, Math.round(len / 0.28));
-  for (let i = 0; i < n; i++) { const m = new THREE.Mesh(dropGeo, dropMat); flowGroup.add(m); drops.push({ m, cp, t: i / n, sp: 0.35 / len }); }
+  for (let i = 0; i < n; i++) { const m = new THREE.Mesh(dropGeo, dropMat); g.add(m); m.userData = { cp, t: i / n, sp: 0.35 / len }; }
 });
-function updDrops(dt) { for (const d of drops) { d.t = (d.t + d.sp * dt) % 1; d.m.position.copy(d.cp.getPointAt(d.t)); } }
-updDrops(0);
+function updDrops(dt) { for (const g of Object.values(kindGroups)) if (g.visible) for (const m of g.children) { const d = m.userData; d.t = (d.t + d.sp * dt) % 1; m.position.copy(d.cp.getPointAt(d.t)); } }
+for (const g of Object.values(kindGroups)) for (const m of g.children) m.position.copy(m.userData.cp.getPointAt(m.userData.t));
+const setKind = (k, on) => { if (kindGroups[k]) kindGroups[k].visible = on; };
+setKind('over', false);
+
+// ---------- simulasi hujan ----------
+const SIM = GEOM.sim;
+const CAP = 5300; // kapasitas nominal 2 x 2.650 L
+const S = { rate: 0, mm: 0, ff: 0, vol: 0, t: 0, speed: 3600, use: false, over: false };
+// air di dalam tandon
+const waterMat = new THREE.MeshStandardMaterial({ color: 0x1c9be0, roughness: 0.25, metalness: 0, transparent: true, opacity: 0.85 });
+const waters = SIM.tanks.map(([x, y]) => {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(SIM.R / 1000, SIM.R / 1000, 1, 48), waterMat);
+  m.userData.base = M(x, y, SIM.base); m.visible = false; scene.add(m); return m;
+});
+// garis hujan
+const RAIN_N = 2600;
+const rr = SIM.roof; const rx0 = -1.2, rx1 = 9.0, rz0 = -4.2, rz1 = 2.0; // meter, area jatuhnya hujan
+const rainPos = new Float32Array(RAIN_N * 6);
+const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
+const rainMat = new THREE.LineBasicMaterial({ color: 0x5f86a8, transparent: true, opacity: 0.55 });
+const rain = new THREE.LineSegments(rainGeo, rainMat); rain.frustumCulled = false; rain.visible = false; scene.add(rain);
+const rainY = new Float32Array(RAIN_N), rainFloor = new Float32Array(RAIN_N);
+function roofZ(xm, zm) { // tinggi permukaan atap (m) di titik (x, -y), atau 0 di luar atap
+  const x = xm * 1000, y = -zm * 1000;
+  if (x < rr.x0 || x > rr.x1 || y < rr.y0 || y > rr.y1) return 0;
+  const ym = (rr.y0 + rr.y1) / 2; return (rr.he + (rr.hr - rr.he) * (1 - Math.abs(y - ym) / (ym - rr.y0))) / 1000;
+}
+function seedDrop(i, top) {
+  const x = rx0 + Math.random() * (rx1 - rx0), z = rz0 + Math.random() * (rz1 - rz0);
+  rainPos[i * 6] = rainPos[i * 6 + 3] = x; rainPos[i * 6 + 2] = rainPos[i * 6 + 5] = z;
+  rainY[i] = top ? 6 + Math.random() * 1.5 : rainFloor[i] + Math.random() * 7; rainFloor[i] = roofZ(x, z);
+}
+for (let i = 0; i < RAIN_N; i++) { rainFloor[i] = 0; seedDrop(i, false); }
+function updRain(dt) {
+  const active = Math.round(RAIN_N * Math.min(1, S.rate / 50 + 0.15)); const L = 0.10 + S.rate / 600;
+  for (let i = 0; i < RAIN_N; i++) {
+    if (i >= active) { rainPos[i * 6 + 1] = rainPos[i * 6 + 4] = -50; continue; }
+    rainY[i] -= 9 * dt; if (rainY[i] < rainFloor[i]) seedDrop(i, true);
+    rainPos[i * 6 + 1] = rainY[i] + L; rainPos[i * 6 + 4] = rainY[i];
+  }
+  rainGeo.attributes.position.needsUpdate = true;
+}
+const $ = (id) => document.getElementById(id);
+const fmt = (n, d = 0) => n.toLocaleString('id-ID', { maximumFractionDigits: d, minimumFractionDigits: d });
+function setGlass(on) {
+  if (!tankMats.length) return;
+  for (const m of tankMats) { m.transparent = on; m.opacity = on ? 0.32 : 1; m.depthWrite = !on; m.needsUpdate = true; }
+  waters.forEach((w) => (w.visible = on && S.vol > 1));
+  const e = $('tGlass'); if (e) e.checked = on;
+}
+function updSim(dtReal) {
+  const hrs = (dtReal * S.speed) / 3600;
+  if (S.rate > 0 || S.use) S.t += hrs;
+  if (S.rate > 0) {
+    const mm = S.rate * hrs; S.mm += mm;
+    let inL = mm * SIM.roof_m2 * SIM.coef;
+    const ffNeed = SIM.ff_l - S.ff; const toFF = Math.min(ffNeed, inL); S.ff += toFF; inL -= toFF;
+    S.vol += inL;
+  }
+  if (S.use) S.vol -= SIM.use_lpd * hrs / 24;
+  S.over = S.vol >= CAP && S.rate > 0;
+  S.vol = Math.max(0, Math.min(CAP, S.vol));
+  // tampilan
+  const f = S.vol / CAP;
+  waters.forEach((w) => { const h = Math.max(0.002, (SIM.h_over / 1000) * f); w.scale.y = h; w.position.copy(w.userData.base).add(new THREE.Vector3(0, h / 2, 0)); w.visible = tankMats[0]?.transparent && S.vol > 1; });
+  $('lv1').style.height = $('lv2').style.height = (f * 93) + '%';
+  $('vol').innerHTML = fmt(S.vol) + ' <span>L</span>';
+  $('mm').textContent = fmt(S.mm, 1) + ' mm'; $('ff').textContent = fmt(S.ff, 1) + ' / 9 L';
+  const day = Math.floor(S.t / 24), hh = Math.floor(S.t % 24), mi = Math.floor((S.t * 60) % 60);
+  $('clk').textContent = `hari ${day}, ${String(hh).padStart(2, '0')}:${String(mi).padStart(2, '0')}`;
+  $('days').textContent = fmt(S.vol / SIM.use_lpd, 0) + ' hari';
+  const st = $('stat');
+  let msg, cls = '';
+  if (S.over) { msg = 'Tandon penuh. Air hujan berikutnya keluar lewat pelimpah.'; cls = 'full'; }
+  else if (S.rate > 0 && S.ff < SIM.ff_l) { msg = 'Hujan awal masuk first flush dulu (kotoran atap dibuang).'; cls = 'wet'; }
+  else if (S.rate > 0) { msg = 'Air bersih masuk tandon 1, lewat pipa bawah ikut mengisi tandon 2.'; cls = 'wet'; }
+  else if (S.use && S.vol > 0) msg = 'Musim kering: air dipakai untuk nutrisi melon tiap hari.';
+  else if (S.use) msg = 'Tandon habis. Kembali isi manual dari sumur.';
+  else msg = S.vol > 0 ? 'Hujan berhenti. Air tersimpan di tandon tertutup.' : 'Pilih intensitas hujan untuk mulai mengisi tandon.';
+  st.textContent = msg; st.className = 'status ' + cls;
+  // aliran
+  const flowOn = flowGroup.visible;
+  if (flowOn) {
+    const simOn = S.rate > 0 || S.use || S.vol > 0;
+    setKind('rain', simOn ? S.rate > 0 : true); setKind('ff', simOn ? S.rate > 0 && S.ff < SIM.ff_l : true);
+    setKind('link', simOn ? S.rate > 0 && !S.over : true); setKind('over', S.over);
+    setKind('out', simOn ? S.use && S.vol > 0 : true);
+  }
+  rain.visible = S.rate > 0;
+}
+function setRain(r) {
+  S.rate = r; $('rainLbl').textContent = r + ' mm/jam';
+  document.querySelectorAll('#rain button').forEach((b) => b.setAttribute('aria-pressed', +b.dataset.r === r));
+  if (r > 0 && !S.glassTouched) setGlass(true);
+  if (r > 0) S.ff = S.mm === 0 ? 0 : S.ff;
+}
+window.setRain = setRain;
 
 // ---------- callout ----------
 const G = GEOM.anchors;
@@ -95,7 +200,7 @@ const CALL = [
   { id: 1, t: 'Atap 18 m²', s: 'plastik UV bening, belum ada talang', a: G.roof },
   { id: 2, t: 'Talang + kasa ~1 mm', s: 'baru, di kedua sisi panjang', a: G.gutter },
   { id: 3, t: 'First flush (~9 L dibuang)', s: '0,5 L per m² atap', a: G.ff },
-  { id: 4, t: 'Tandon tertutup', s: 'kelas 1.100 L, gelap, di luar dinding kasa', a: G.tank },
+  { id: 4, t: '2 tandon tertutup', s: 'Filtra 2 × 2.650 L, di luar dinding kasa', a: G.tank },
   { id: 5, t: 'Filter 120 sampai 200 mesh', s: 'sebelum masuk bak lantai', a: G.filter },
   { id: 6, t: 'Cek pH dan TDS', s: 'pH meter + TDS pen', a: G.table },
   { id: 7, t: 'Campur AB mix di tong/bak yang ada', s: 'tong diberi tutup (usulan)', a: G.drum },
@@ -103,6 +208,7 @@ const CALL = [
   { id: 'a', t: 'Selang taman, isi manual dari sumur (perkiraan)', s: '', a: G.hose, sub: true },
   { id: 'b', t: 'Pelimpah', s: '', a: G.over, sub: true },
   { id: 'c', t: 'Lubang angin berkasa', s: '', a: G.vent, sub: true },
+  { id: 'k', t: 'Pipa sambung antar tandon', s: '', a: G.link, sub: true },
   { id: 'd', t: 'Kran di atas dasar', s: '', a: G.tap, sub: true },
   { id: 'e', t: 'Bak lantai bertutup (sudah ada)', s: '', a: G.res, sub: true },
   { id: 'f', t: 'Pompa celup (perkiraan, sudah ada)', s: '', a: G.pump, sub: true },
@@ -132,16 +238,30 @@ function setView(name) {
   const v = VIEWS[name]; cur = name;
   ['cover', 'plant', 'reslid'].forEach((g) => window.setGroup(g, !(v.hide || []).includes(g)));
   const nt = document.getElementById('note'); if (nt) { nt.textContent = v.note || ''; nt.style.display = v.note ? '' : 'none'; }
-  camera.position.set(...v.pos); controls.target.set(...v.tgt); camera.fov = v.fov; camera.updateProjectionMatrix(); controls.update();
-  document.querySelectorAll('#ui button[data-v]').forEach((b) => b.classList.toggle('on', b.dataset.v === name));
+  camera.position.set(...v.pos); controls.target.set(...v.tgt); camera.fov = v.fov; baseFov = v.fov; applyOffset(); controls.update();
+  document.querySelectorAll('#views button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === name));
 }
 window.setView = setView;
+let baseFov = 34;
+function applyOffset() {
+  const w = innerWidth, h = innerHeight, d = RIGHT > 24 ? RIGHT - 24 : 0;
+  camera.aspect = w / h;
+  camera.fov = w / h < 1.6 ? Math.min(75, baseFov * (1 + (1.6 - w / h) * 0.75)) : baseFov;
+  if (d) camera.setViewOffset(w + d, h, d, 0, w, h); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+}
 let labelsOn = true;
 const tmp = new THREE.Vector3();
+let RIGHT = 24; const fitRight = () => { const u = document.getElementById('ui'); RIGHT = (!RENDER && u && innerWidth > 820 && !u.classList.contains('closed')) ? u.offsetWidth + 40 : 24; }; fitRight(); addEventListener('resize', fitRight);
 function updLabels() {
   const v = VIEWS[cur]; const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
+  const tEl = document.getElementById('title'), iEl = document.getElementById('info'), uEl = document.getElementById('ui');
+  const TOPLIM = (tEl && tEl.offsetParent ? tEl.getBoundingClientRect().bottom : 0) + 10;
+  let BOTLIM = h - 16;
+  if (iEl && iEl.offsetParent) BOTLIM = iEl.getBoundingClientRect().top - 10;
+  else if (uEl && innerWidth <= 820 && getComputedStyle(uEl).display !== 'none') BOTLIM = uEl.getBoundingClientRect().top - 10;
   for (const c of CALL) {
-    const show = labelsOn && v.show.includes(c.id) && !(CLEAN && c.sub);
+    const show = labelsOn && v.show.includes(c.id) && !(CLEAN && c.sub) && !(c.sub && w < 820);
     tmp.copy(c.v).project(camera);
     const vis = show && tmp.z < 1;
     c.el.style.display = vis ? '' : 'none'; c.line.style.display = c.dot.style.display = vis ? '' : 'none';
@@ -151,8 +271,8 @@ function updLabels() {
     const lx = x + o[0], ly = y + o[1];
     const bw = c.el.offsetWidth, bh = c.el.offsetHeight;
     let left = o[0] >= 0 ? lx : lx - bw;
-    left = Math.max(24, Math.min(w - bw - 24, left));
-    let top = Math.max(96, Math.min(h - 100 - bh, ly - bh / 2));
+    left = Math.max(24, Math.min(w - bw - RIGHT, left));
+    let top = Math.max(TOPLIM, Math.min(BOTLIM - bh, ly - bh / 2));
     c.el.style.left = left + 'px'; c.el.style.top = top + 'px';
     const ex = x < left ? left : (x > left + bw ? left + bw : x), ey = top + bh / 2;
     c.line.setAttribute('x1', x); c.line.setAttribute('y1', y);
@@ -162,13 +282,34 @@ function updLabels() {
   }
 }
 window.setFlow = (on) => { flowGroup.visible = on; };
+window.isolate = (re) => { const r = new RegExp(re, 'i'); for (const list of Object.values(groups)) for (const o of list) { const nm = o.name || o.parent?.name || ''; o.visible = r.test(nm); } };
+window.frame = (pos, tgt, fov) => { camera.position.set(...pos); controls.target.set(...tgt); camera.fov = baseFov = fov; applyOffset(); controls.update(); };
 window.setLabels = (on) => { labelsOn = on; };
 
 
-document.querySelectorAll('#ui button[data-v]').forEach((b) => b.onclick = () => setView(b.dataset.v));
+document.querySelectorAll('#views button').forEach((b) => b.onclick = () => setView(b.dataset.v));
 const tg = (id, fn) => { const e = document.getElementById(id); if (e) e.onchange = () => fn(e.checked); };
 tg('tLabels', window.setLabels); tg('tFlow', window.setFlow);
 tg('tCover', (on) => window.setGroup('cover', on)); tg('tPlant', (on) => window.setGroup('plant', on));
+tg('tUse', (on) => { S.use = on; }); tg('tGlass', (on) => { S.glassTouched = true; setGlass(on); });
+document.querySelectorAll('#rain button').forEach((b) => b.onclick = () => setRain(+b.dataset.r));
+document.querySelectorAll('#speed button').forEach((b) => b.onclick = () => { S.speed = +b.dataset.s; document.querySelectorAll('#speed button').forEach((x) => x.setAttribute('aria-pressed', x === b)); });
+$('bFull').onclick = () => { S.vol = CAP; S.ff = SIM.ff_l; if (!S.glassTouched) setGlass(true); };
+$('bReset').onclick = () => { Object.assign(S, { mm: 0, ff: 0, vol: 0, t: 0 }); setRain(0); };
+const mobile = () => innerWidth <= 820;
+let panelOpen = !mobile();
+function setPanel(open) {
+  panelOpen = open; $('ui').classList.toggle('open', open); $('ui').classList.toggle('closed', !open);
+  $('uiHead').setAttribute('aria-expanded', open);
+  $('uiHint').textContent = open ? (mobile() ? 'Ketuk untuk tutup' : 'Sembunyikan') : (mobile() ? 'Ketuk untuk buka' : 'Tampilkan');
+  fitRight(); applyOffset();
+}
+$('uiHead').onclick = () => setPanel(!panelOpen);
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && panelOpen && mobile()) { setPanel(false); $('uiHead').focus(); } });
+let wasMobile = mobile();
+addEventListener('resize', () => { if (mobile() !== wasMobile) { wasMobile = mobile(); setPanel(!wasMobile); } });
+setPanel(panelOpen);
+if (REDUCED && !RENDER) { const f = $('tFlow'); f.checked = false; flowGroup.visible = false; }
 if (RENDER) document.body.classList.add('render');
 if (CLEAN) { document.body.classList.add('clean'); flowGroup.visible = false; }
 setView(qs.get('view') || 'overview');
@@ -176,10 +317,10 @@ setView(qs.get('view') || 'overview');
 const clock = new THREE.Clock();
 function loop() {
   const dt = clock.getDelta();
-  if (!RENDER) updDrops(dt);
+  if (!RENDER) { updSim(Math.min(dt, 0.1)); updDrops(dt); if (S.rate > 0) updRain(REDUCED ? 0 : Math.min(dt, 0.05)); }
   controls.update(); renderer.render(scene, camera); updLabels();
   requestAnimationFrame(loop);
 }
 loop();
 window.renderOnce = () => { controls.update(); renderer.render(scene, camera); updLabels(); };
-addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+addEventListener('resize', () => { fitRight(); applyOffset(); renderer.setSize(innerWidth, innerHeight); });

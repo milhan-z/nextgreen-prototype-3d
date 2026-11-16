@@ -4,16 +4,18 @@ Ini prototype 3D yang aku bikin buat proposal ACC #NextGreen Leaders Challenge 2
 
 Viewer online: https://milhan-z.github.io/nextgreen-prototype-3d/
 
-Versi ini (rev 2) sudah aku sesuaikan dengan video greenhouse aktif dari WA 13 Nov 2026.
+Versi ini (rev 3) sudah aku sesuaikan dengan video greenhouse aktif dari WA 13 Nov 2026, dan tandonnya sudah aku ganti jadi 2 tandon Filtra 2.650 L sesuai RAB.
 
 ## Isi folder
-- `index.html` : viewer 3D interaktif, bisa offline (Three.js dan model sudah ada di dalam file). Ada tombol tampilan (Keseluruhan, Samping, Dalam, Stasiun air, Sudut tong), toggle label, aliran air, atap/kasa, tanaman.
+- `index.html` : viewer 3D interaktif, bisa offline (Three.js dan model sudah ada di dalam file). Ada panel kontrol: sudut pandang (Keseluruhan, Tandon, Stasiun air, Samping, Dalam, Sudut tong), simulasi hujan, dan lapisan (label, aliran air, atap/kasa, tanaman).
+  - Simulasi hujan: pilih Gerimis (5 mm/jam), Sedang (20) atau Lebat (50). Air masuk = hujan (mm) x 18 m² x 0,8, 9 L pertama dibuang first flush, sisanya mengisi 2 tandon (kapasitas nominal 5.300 L). Kalau penuh, air keluar lewat pelimpah. Toggle "Pakai air nutrisi" mengurangi 64,4 L per hari (hitungan tim) supaya kelihatan berapa hari cadangannya cukup. Ini simulasi kasar buat ilustrasi, bukan hasil ukur.
 - `prototype.step` : file CAD (assembly berwarna, satuan mm)
 - `prototype.stl` : mesh gabungan (mm)
 - `prototype.glb` : model 3D berwarna (meter, sumbu Y ke atas)
 - `gambar-teknik-A3.pdf` / `.png` : lembar gambar teknik A3 (tampak atas, samping, depan, isometri, daftar komponen, alur air, kop gambar)
-- `render-1-overview.png`, `render-2-samping.png`, `render-3-dalam.png`, `render-4-stasiun-air.png`, `render-6-sudut-tong.png` : render 1920x1080 berlabel
+- `render-1-overview.png`, `render-2-samping.png`, `render-3-dalam.png`, `render-4-stasiun-air.png`, `render-6-sudut-tong.png`, `render-7-tandon.png` : render 1920x1080 berlabel
 - `render-5-iso-nomor.png` : render isometri cuma pakai nomor (dipakai di lembar A3)
+- `DESIGN.md` : arah desain viewer (warna, font, dial), dan `anti-slop/` : audit antislop dan laporan perbaikannya
 - `src/` : model parametrik CadQuery (`model.py`, semua ukuran di dict `P`), ekspor, proyeksi 2D, lembar A3
 - `web/` : sumber viewer (Three.js) dan skrip render
 
@@ -46,7 +48,7 @@ Ini yang aku lihat dari video greenhouse yang aktif. Semua ukuran di bawah ini p
 1. Atap 18 m² (sudah ada)
 2. Talang PVC + kasa kira kira 1 mm di kedua sisi panjang (baru)
 3. First flush kira kira 9 L dibuang per greenhouse (0,5 L per m² x 18 m², acuan UNDP 2016)
-4. Tandon tertutup dan gelap, kelas 1.100 L, dengan pelimpah, lubang angin berkasa, kran di atas dasar (baru)
+4. Dua tandon tertutup Filtra TB 2500 (2 × 2.650 L), disambung pipa bawah, dengan pelimpah, lubang angin berkasa, kran di atas dasar (baru)
 5. Filter 120 sampai 200 mesh sebelum masuk bak (baru)
 6. Cek pH dan TDS (baru)
 7. Campur AB mix di tong/bak yang sudah ada
@@ -60,7 +62,7 @@ Semua angka ini perkiraan dari foto/video, belum diukur di lapangan:
 - Tinggi tepi kira kira 1,9 m, bubungan kira kira 2,6 m, jarak tiang kira kira 1,2 m, profil rangka 40 mm.
 - Tong kira kira 200 L (Ø0,58 x 0,88 m). Bak lantai Ø0,80 m, dalam 0,60 m. Ukuran pompa celup.
 - Pipa balik PVC kira kira 2 inch, selang PE 16 mm, ukuran pipa isi PVC dari atas dan dari mana asalnya.
-- Tandon kelas 1.100 L (Ø1,10 x 1,35 m) dan letaknya di luar dinding kasa sisi timur.
+- Dimensi tandon Filtra 2.650 L belum ditemukan, dimodelkan Ø1,40 x 1,72 m (perkiraan). Dua tandon berjajar di luar dinding kasa sisi timur.
 - Diameter talang (kira kira 4 inch), pipa turun (kira kira 2,5 inch), first flush pipa Ø110 sepanjang 1,20 m (kira kira 9 L), letak filter dan meja cek air.
 - Arah utara belum dicek. Jalur persis kabel pompa dan selang taman juga belum dicek.
 - Ember ditampilkan 24 biar gambar jelas, aslinya sekitar 60 sampai 66 tanaman.

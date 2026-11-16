@@ -33,6 +33,6 @@ for i, (n, g, ck, s) in enumerate(parts):
     scene.add_geometry(m, node_name=nm, geom_name=nm)
     meta.append(dict(name=n, group=g, color=ck))
 scene.export(OUT + "prototype.glb", include_normals=True)
-json.dump(dict(anchors=model.A, flow=model.FLOW), open(OUT + "web/geom.json", "w"))
+json.dump(dict(anchors=model.A, flow=model.FLOW, flowk=model.FLOWK, sim=model.SIM), open(OUT + "web/geom.json", "w"))
 json.dump(dict(params=P, parts=meta), open(OUT + "src/parts.json", "w"), indent=1, ensure_ascii=False)
 print("ok")
