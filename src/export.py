@@ -11,9 +11,9 @@ for i, (n, g, ck, s) in enumerate(parts):
     if g == "site":
         continue
     asm.add(s, name=f"{i:02d}_{n}".replace(" ", "_"), color=cq.Color(*C[ck]))
-asm.save(OUT + "prototype.step")
+asm.save(OUT + "dist/prototype.step")
 allc = cq.Compound.makeCompound([s for n, g, ck, s in parts if g != "site"])
-cq.exporters.export(allc, OUT + "prototype.stl", tolerance=2, angularTolerance=0.3)
+cq.exporters.export(allc, OUT + "dist/prototype.stl", tolerance=2, angularTolerance=0.3)
 
 scene = trimesh.Scene()
 meta = []
@@ -32,7 +32,7 @@ for i, (n, g, ck, s) in enumerate(parts):
     nm = f"{g}|{ck}|{i:02d} {n}"
     scene.add_geometry(m, node_name=nm, geom_name=nm)
     meta.append(dict(name=n, group=g, color=ck))
-scene.export(OUT + "prototype.glb", include_normals=True)
+scene.export(OUT + "dist/prototype.glb", include_normals=True)
 json.dump(dict(anchors=model.A, flow=model.FLOW, flowk=model.FLOWK, sim=model.SIM), open(OUT + "web/geom.json", "w"))
 json.dump(dict(params=P, parts=meta), open(OUT + "src/parts.json", "w"), indent=1, ensure_ascii=False)
 print("ok")

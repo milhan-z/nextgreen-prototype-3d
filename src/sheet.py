@@ -225,6 +225,6 @@ ax.annotate("", xy=(NXa, NYa + 8), xytext=(NXa, NYa), arrowprops=dict(arrowstyle
 ax.text(NXa, NYa + 9, "U", ha="center", va="bottom", fontsize=7, weight="bold")
 ax.text(NXa, NYa - 1.5, "arah utara\nbelum dicek", ha="center", va="top", fontsize=4.8, color=GREY)
 
-fig.savefig(D + "gambar-teknik-A3.pdf")
-fig.savefig(D + "gambar-teknik-A3.png", dpi=200)
+fig.savefig(D + "drawings/gambar-teknik-A3.pdf")
+fig.savefig(D + "drawings/gambar-teknik-A3.png", dpi=200)
 print("saved")

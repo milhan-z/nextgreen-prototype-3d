@@ -1,0 +1,4 @@
+dist/** linguist-generated=true -diff
+*.step binary
+*.stl binary
+*.glb binary
