@@ -8,23 +8,19 @@
   "TUBE": 40,
   "ROOF_OVER": 100,
   "GUT_R": 55,
-  "DP_R": 45,
+  "DP_R": 32,
   "FF_R": 55,
   "FF_LEN": 1200,
-  "TANK_D": 1415,
-  "TANK_H": 1860,
-  "TANK_BASE": 400,
+  "TANK_R": 700,
+  "TANK_H": 1720,
+  "TANK_BASE": 100,
   "TANK_XY": [
-   7350,
+   7250,
    2350
   ],
   "TANK2_Y": 800,
-  "OUTLET_RISE": 150,
-  "INLET_BELOW_GUT": 120,
-  "PIPE1_R": 16,
-  "SCREEN_R": 34,
-  "OVER_R": 30,
-  "OVER_STUB": 90,
+  "TAP_Z": 400,
+  "ZC": 1720,
   "DRUM_R": 290,
   "DRUM_H": 880,
   "DRUM_XY": [
@@ -51,9 +47,7 @@
   "PE_R": 8,
   "MICRO_R": 2.5,
   "PE_Z": 440,
-  "WIRE_Z": 1750,
-  "TANK_R": 707.5,
-  "ZC": 1698.3333333333333
+  "WIRE_Z": 1750
  },
  "parts": [
   {
@@ -147,9 +141,14 @@
    "color": "melon"
   },
   {
-   "name": "Tong biru ~200 L (sudah ada, terbuka)",
+   "name": "Tong biru ~200 L (sudah ada)",
    "group": "existing",
    "color": "drum"
+  },
+  {
+   "name": "Pipa isi PVC putih dari atas (sudah ada)",
+   "group": "existing",
+   "color": "pvc"
   },
   {
    "name": "Pipa keluar tong ke bak (sudah ada)",
@@ -172,22 +171,7 @@
    "color": "cable"
   },
   {
-   "name": "Papan SOP cek EC dan pH (baru)",
-   "group": "new",
-   "color": "table"
-  },
-  {
-   "name": "pH meter dan EC meter (baru)",
-   "group": "new",
-   "color": "meter"
-  },
-  {
-   "name": "Sumur di luar greenhouse (letak dan ukuran perkiraan)",
-   "group": "existing",
-   "color": "concrete"
-  },
-  {
-   "name": "Selang air sumur ke tong biru (perkiraan, pompa atau manual)",
+   "name": "Selang taman (isi manual, perkiraan)",
    "group": "existing",
    "color": "hose"
   },
@@ -197,12 +181,12 @@
    "color": "new"
   },
   {
-   "name": "Kasa talang SS304 dan gantungan (baru, bukaan perkiraan)",
+   "name": "Kasa talang ~1 mm dan gantungan (baru)",
    "group": "new",
    "color": "filter"
   },
   {
-   "name": "Pipa turun 3 inci (baru)",
+   "name": "Pipa turun dan pipa ke tandon (baru)",
    "group": "new",
    "color": "new"
   },
@@ -212,17 +196,12 @@
    "color": "new"
   },
   {
-   "name": "Tabung filter media 4 inci horizontal (baru, panjang perkiraan)",
-   "group": "new",
-   "color": "filter"
-  },
-  {
    "name": "Dudukan tandon 1 (batako + semen, baru)",
    "group": "new",
    "color": "concrete"
   },
   {
-   "name": "Tandon 1 Filtra TB 2500, 2.650 L (baru)",
+   "name": "Tandon 1 Filtra 2.650 L (baru)",
    "group": "new",
    "color": "tank"
   },
@@ -242,7 +221,7 @@
    "color": "concrete"
   },
   {
-   "name": "Tandon 2 Filtra TB 2500, 2.650 L (baru)",
+   "name": "Tandon 2 Filtra 2.650 L (baru)",
    "group": "new",
    "color": "tank"
   },
@@ -257,34 +236,49 @@
    "color": "new"
   },
   {
-   "name": "Pipa sambung bawah antar tandon (baru)",
+   "name": "Pipa sambung antar tandon + stop kran (baru)",
    "group": "new",
    "color": "new"
   },
   {
-   "name": "Pelimpah 2 inci bawaan tandon (baru)",
+   "name": "Pipa pelimpah (baru)",
    "group": "new",
    "color": "new"
   },
   {
-   "name": "Pipa PVC 1 inci tandon ke tong biru (baru, panjang perkiraan)",
+   "name": "Kran keluar di atas dasar (baru)",
    "group": "new",
    "color": "new"
   },
   {
-   "name": "Kran tandon 1 inci (baru)",
-   "group": "new",
-   "color": "valve"
-  },
-  {
-   "name": "Screen filter 1 inci 120 mesh (baru)",
+   "name": "Housing filter 120 sampai 200 mesh (baru)",
    "group": "new",
    "color": "filter"
   },
   {
-   "name": "Kran sampel pada pipa 1 inci (baru)",
+   "name": "Pipa ke bak lantai (baru)",
    "group": "new",
-   "color": "valve"
+   "color": "new"
+  },
+  {
+   "name": "Kran sampel (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Meja cek air (baru)",
+   "group": "new",
+   "color": "table"
+  },
+  {
+   "name": "pH meter, TDS pen, gelas sampel (baru)",
+   "group": "new",
+   "color": "meter"
+  },
+  {
+   "name": "Tutup tong (usulan, aslinya terbuka)",
+   "group": "new",
+   "color": "new"
   },
   {
    "name": "Tanah",

@@ -71,12 +71,11 @@ ax.add_patch(Rectangle((x0, y0), x1 - x0, y1 - y0, fill=False, lw=0.35, ec=GREY,
 ax.plot([fa(-300, W / 2)[0], fa(L + 300, W / 2)[0]], [fa(0, W / 2)[1]] * 2, color=GREY, lw=0.3, ls=(0, (8, 2, 1, 2)))
 dim((0, 0), (L, 0), -9, "6,00 m", fa)
 dim((0, 0), (0, W), -9, "3,00 m", fa, horiz=False)
-dim((P["TANK_XY"][0] - P["TANK_R"], P["TANK_XY"][1] + P["TANK_R"] + 80),
-    (P["TANK_XY"][0] + P["TANK_R"], P["TANK_XY"][1] + P["TANK_R"] + 80), 6, "Ø 1,415 m", fa, fs=5.5)
+dim((6550, 1550), (7650, 1550), -1.5, "Ø ±1,10 m (perkiraan)", fa, fs=5.5)
 vtitle(35, 281, "TAMPAK ATAS", "skala 1:50, garis titik-strip = tepi atap dan bubungan, tanaman tidak digambar")
-for n, anc, yy in ((7, (5620, 2560), 3600), (6, (5100, 2520), 3100), (3, (6450, 2350), 2500), (5, (6380, 2100), 1500), (4, (7600, 1800), 700)):
+for n, anc, yy in ((7, (5620, 2560), 3500), (3, (6400, 2350), 2850), (4, (7100, 1950), 2050), (5, (6260, 2050), 1250), (6, (6750, 675), 350)):
     balloon(anc, fa(9300, yy), n, fa)
-ax.text(*fa(5200, 3900), "ke sumur, di luar greenhouse (perkiraan)", fontsize=5.2, color=GREY, va="center", ha="center")
+ax.text(*fa(6700, 3560), "selang ke sumur (isi manual, perkiraan)", fontsize=5.2, color=GREY, va="center", ha="right")
 
 # ---------------- TAMPAK SAMPING ----------------
 fs_ = T(27, 112)
@@ -90,14 +89,14 @@ dim((0, 0), (L, 0), -13.5, "6,00 m", fs_)
 dim((0, 0), (0, HE), -6, "1,90 m (perkiraan)", fs_, horiz=False, fs=6)
 dim((0, 0), (0, HR), -12, "2,60 m (perkiraan)", fs_, horiz=False, fs=6)
 dim((6400 - 150, P["ZC"] - P["FF_LEN"]), (6400 - 150, P["ZC"]), 0, "", fs_, horiz=False)
-ax.text(*fs_(5900, -180), "first flush Ø110 (~9 L) lalu tabung 4 inci horizontal", fontsize=5.3, ha="left", va="top", color=INK,
+ax.text(*fs_(6250, -180), "first flush 1,20 m, pipa Ø110 (~9 L, perkiraan)", fontsize=5.3, ha="left", va="top", color=INK,
         bbox=dict(fc="white", ec="none", pad=0.3))
-dim((8600, 0), (8600, P["TANK_BASE"] + P["TANK_H"]), 6, "2,26 m (0,40 dudukan perkiraan + 1,86 spek)", fs_, horiz=False, fs=5.5)
+dim((8350, 0), (8350, P["TANK_BASE"] + P["TANK_H"]), 4, "1,82 m (perkiraan)", fs_, horiz=False, fs=6)
 vtitle(27, 181, "TAMPAK SAMPING (dari selatan)", "skala 1:50, garis putus = bak lantai dan pompa celup tertanam")
 balloon((2400, 2450), fs_(3600, 3050), 1, fs_)
 balloon((3800, 1800), fs_(4700, 3050), 2, fs_)
-balloon((6450, 1600), fs_(5600, 3050), 3, fs_)
-balloon((7500, 1400), fs_(7200, 3050), 4, fs_)
+balloon((6400, 1000), fs_(5900, 3050), 3, fs_)
+balloon((7300, 900), fs_(7200, 3050), 4, fs_)
 balloon((2800, 440), (fs_(2300, -1250)[0], fs_(0, -1250)[1]), 8, fs_, new=False)
 
 # ---------------- TAMPAK DEPAN ----------------
@@ -129,12 +128,12 @@ ax.text(X0, Y0 + HH + 1.2, "TAMPAK ISOMETRI (render 3D, tanpa skala)", fontsize=
 BX, BY, BW = 300, 186, 110
 rows = [
     ("1", "Atap 18 m²", "plastik UV bening, 3 x 6 m,\nsudah ada, belum ada talang", "Ada"),
-    ("2", "Talang + kasa SS304", "PVC, dua sisi panjang,\nbukaan kasa perkiraan", "Baru"),
-    ("3", "First flush + tabung 4 inci", "9 L dibuang, lalu tabung\nmedia 4 inci horizontal", "Baru"),
-    ("4", "2 tandon Filtra TB 2500", "2 x 2.650 L, hitam, Ø1,415 x 1,86 m,\npipa bawah, pelimpah 2 inci bawaan", "Baru"),
-    ("5", "Pipa 1 inci ke tong biru", "keluar dasar tandon, kran, filter,\njatuh ke atas tong. Panjang perkiraan", "Baru"),
-    ("6", "Cek EC dan pH di tong biru", "meter + papan SOP di sebelah tong,\nbukan meja di luar", "Baru"),
-    ("7", "Campur AB mix di tong biru", "tong terbuka (sudah ada),\nball valve ke bak saat bak habis", "Ada"),
+    ("2", "Talang + kasa ~1 mm", "PVC, dua sisi panjang", "Baru"),
+    ("3", "First flush (~9 L dibuang)", "0,5 L per m² atap, pipa Ø110", "Baru"),
+    ("4", "2 tandon tertutup", "Filtra 2 x 2.650 L, disambung pipa bawah,\npelimpah, lubang angin, kran di atas dasar", "Baru"),
+    ("5", "Filter 120 sampai 200 mesh", "housing sebelum ke bak lantai", "Baru"),
+    ("6", "Cek pH dan TDS", "pH meter + TDS pen di meja", "Baru"),
+    ("7", "Campur AB mix di tong/bak yang ada", "tong ~200 L sekarang terbuka,\nusulan: diberi tutup", "Ada"),
     ("8", "Ke tanaman (Dutch Bucket, tetes)", "pompa celup + PE 16 mm yang ada,\nbalik lewat pipa PVC ~2 inch", "Ada"),
 ]
 ax.text(BX, BY + 2, "DAFTAR KOMPONEN", fontsize=10, weight="bold", color=INK, va="bottom")
@@ -166,8 +165,8 @@ ax.text(NX + 4, NY, "CATATAN", fontsize=9, weight="bold", va="bottom")
 notes = [
     "Tapak 3,00 x 6,00 m dan atap 18 m² dari data tim. Tinggi tepi ±1,90 m dan bubungan ±2,60 m perkiraan dari video 13 Nov 2026.",
     "Kondisi yang ada mengikuti video: rangka baja ringan, ember di atas pipa balik PVC, tetes PE 16 mm, tong, bak lantai, pompa.",
-    "Jarak tiang ±1,20 m. Tong (~200 L), bak, pompa, letak tandon dan sumur masih perkiraan. Spek tandon TB 2500: Ø1,415 m, tinggi 1,86 m. Dudukan 0,40 m (perkiraan).",
-    "First flush 0,5 L per m² x 18 m² = 9 L (UNDP 2016), direset tiap kejadian hujan. Tabung filter 4 inci horizontal, panjangnya perkiraan.",
+    "Jarak tiang ±1,20 m, ukuran tong (~200 L), bak lantai, pompa celup dan letak tandon diperkirakan dari video, belum diukur. Dimensi tandon Filtra belum ditemukan (dimodelkan Ø1,40 x 1,72 m).",
+    "Volume first flush 0,5 L per m² x 18 m² = 9 L (acuan UNDP 2016). Pipa Ø110 sepanjang 1,20 m kira kira 9,4 L.",
     "Ember ditampilkan 24 buah agar gambar jelas (aslinya sekitar 60 sampai 66 tanaman). Tanaman tidak digambar di tampak 2D.",
     "Warna toska = sistem air hujan usulan baru. Warna hitam/abu = kondisi yang sudah ada di lokasi.",
     "Model ilustratif untuk proposal, bukan gambar kerja konstruksi. Satu dari tiga greenhouse, tandon diletakkan di luar dinding kasa.",
@@ -186,7 +185,7 @@ ax.add_patch(Rectangle((14, 16), 196, 12, fill=False, ec=INK, lw=0.4))
 # ---------------- ALUR AIR ----------------
 FX, FY = 214, 98
 ax.text(FX, FY + 1.5, "ALUR AIR HUJAN", fontsize=9, weight="bold", va="bottom")
-steps = ["Atap 18 m²", "Talang + kasa", "First flush +\ntabung 4 inci", "2 tandon hitam\n2 x 2.650 L", "Pipa 1 inci\nke tong biru", "Cek EC + pH\ndi tong biru", "Campur AB mix\ndi tong biru", "Ke tanaman\n(tetes)"]
+steps = ["Atap 18 m²", "Talang + kasa", "First flush\n~9 L dibuang", "2 tandon\n2 x 2.650 L", "Filter 120\nsampai 200 mesh", "Cek pH dan TDS", "Campur AB mix\ndi tong/bak", "Ke tanaman\n(tetes)"]
 bw_, bh_, gap = 42, 11, 7
 for i, t in enumerate(steps):
     r, c = divmod(i, 4)
@@ -200,7 +199,7 @@ for i, t in enumerate(steps):
         arrow((x + bw_ + 0.5, y + bh_ / 2), (x + bw_ + gap - 0.5, y + bh_ / 2))
     elif r == 0:
         ax.annotate("", xy=(FX + 4.5, y - 6.5 + 0.2), xytext=(x + bw_ / 2, y), arrowprops=dict(arrowstyle="-|>", lw=0.5, color=INK, mutation_scale=6, connectionstyle="angle,angleA=-90,angleB=180,rad=0"))
-ax.text(FX, FY - 4 - 2 * (bh_ + 7) + 4, "Kotak toska = bagian baru. Air diisi per batch. Air sumur ke tong ditandai perkiraan (pompa atau manual).", fontsize=5.6, color=GREY, va="top")
+ax.text(FX, FY - 4 - 2 * (bh_ + 7) + 4, "Kotak toska = bagian baru. Air sumur tetap sumber utama (sekarang diisi manual pakai selang, perkiraan).", fontsize=5.6, color=GREY, va="top")
 
 # ---------------- KOP GAMBAR ----------------
 TX, TY, TW, THh = 250, 10, 160, 46
@@ -213,8 +212,8 @@ for cx in (TX + 55, TX + 105):
 ax.text(TX + 3, TY + 40.5, "Prototype Sistem Air Hujan Greenhouse Melon KWT, Pasir Wetan", fontsize=8.6, weight="bold", va="center")
 ax.text(TX + 3, TY + 34, "Karanglewas, Banyumas. ACC #NextGreen Leaders Challenge 2026", fontsize=6.3, va="center", color="#333a40")
 ax.text(TX + 3, TY + 25, "Catatan: semua ukuran perkiraan dari video 13 Nov 2026, belum diukur", fontsize=6.0, va="center", color="#b3471d")
-cells = [("SKALA", "1:50 (A3)"), ("TANGGAL", "24 Nov 2026"), ("SATUAN", "meter")]
-cells2 = [("LEMBAR", "1 dari 1"), ("STATUS", "Konsep proposal, rev 4"), ("MITRA", "KWT Pasir Wetan")]
+cells = [("SKALA", "1:50 (A3)"), ("TANGGAL", "13 Nov 2026"), ("SATUAN", "meter")]
+cells2 = [("LEMBAR", "1 dari 1"), ("STATUS", "Konsep proposal, rev 2"), ("MITRA", "KWT Pasir Wetan")]
 for (k, v), cx in zip(cells, (TX, TX + 55, TX + 105)):
     ax.text(cx + 2, TY + 17.5, k, fontsize=5, color=GREY, va="center"); ax.text(cx + 2, TY + 13, v, fontsize=7.2, weight="bold", va="center")
 for (k, v), cx in zip(cells2, (TX, TX + 55, TX + 105)):

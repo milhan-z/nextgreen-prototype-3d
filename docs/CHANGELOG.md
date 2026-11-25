@@ -1,13 +1,8 @@
 # Riwayat perubahan
 
-## Rev 4 (24 Nov 2026, jalur tong diperbarui 25 Nov)
-- Pipa 1 inci keluar dari dasar tandon, lewat housing filter, lalu jatuh ke atas tong biru. Panjangnya perkiraan.
-- Alur air disamakan dengan keterangan KWT dan RAB: talang, pipa turun 3 inci, first flush, tabung filter media 4 inci horizontal, 2 tandon hitam, kran, bak, pompa, tetes.
-- Pipa dari tandon ke tutup bak dihapus. Tutup tong, meja cek di luar, pipa PVC buntu, dan selang taman yang berkelok dihapus.
-- Tandon Filtra TB 2500 digambar Ø1,415 m × 1,86 m, warna hitam. Dudukan 0,40 m (satu konstanta `TANK_BASE`).
-- Pelimpah hanya moncong bawaan 2 inci, tanpa pipa buang panjang.
-- Simulasi pemakaian jadi batch. First flush direset tiap kejadian hujan.
-- Satu jalur air sumur di luar greenhouse, ditandai perkiraan.
+## Rev 3.1 (25 Nov 2026)
+- Model dikembalikan ke rev 3 (tandon di dudukan rendah, belum ditinggikan). Perubahan alur batch dari 24 sampai 25 Nov dibatalkan.
+- Warna tandon diganti dari oranye ke hitam.
 
 ## Rev 3 (16 Nov 2026)
 - Tandon diganti jadi 2 tandon Filtra 2.650 L sesuai RAB (kapasitas nominal 5.300 L).

@@ -1,8 +1,7 @@
-"""Model parametrik greenhouse melon KWT + sistem air hujan TIRTA MANDIRI.
+"""Model parametrik greenhouse melon KWT + sistem air hujan (usulan).
+Versi 2: disesuaikan dengan video greenhouse aktif (WA 13 Nov 2026).
 Satuan mm. Sumbu: X = panjang (6 m), Y = lebar (3 m), Z = atas.
-Angka bertanda EST = perkiraan, belum diukur di lapangan.
-Alur: talang > pipa turun 3 inci > first flush + tabung filter 4 inci (tidur)
-> 2 tandon > kran bawah > filter > jatuh ke atas tong biru > bak > tetes.
+Angka bertanda EST = perkiraan dari video, belum diukur di lapangan.
 """
 import math
 import cadquery as cq
@@ -14,21 +13,14 @@ P = dict(
     BAY=1200,                   # jarak tiang, EST (video: 1 sampai 1,5 m)
     TUBE=40,                    # profil baja ringan / galvanis, EST
     ROOF_OVER=100,              # tonjolan atap melewati dinding, EST
-    GUT_R=55,                   # talang, diameter tidak disebut di RAB: EST
-    DP_R=45,                    # pipa turun 3 inci (RAB). OD PVC 3 inci kira-kira 90 mm
+    GUT_R=55,                   # talang PVC ~4 inch (usulan), EST
+    DP_R=32,                    # pipa turun ~2,5 inch (usulan), EST
     FF_R=55, FF_LEN=1200,       # first flush pipa 110 mm, ~9 L (0,5 L/m2 x 18 m2)
-    TANK_D=1415, TANK_H=1860,   # spek Filtra/Jerapah TB 2500: Ø1,415 m, tinggi 1,86 m
-    # SATU konstanta dudukan, mm. Perkiraan di tengah rentang 0,3 sampai 0,5 m.
-    # Ubah angka ini saja kalau dudukan naik atau turun. Lubang masuk tetap di bawah talang.
-    TANK_BASE=400,
-    TANK_XY=(7350, 2350),       # tandon 1 (air masuk), luar dinding kasa sisi timur, EST
+    TANK_R=700, TANK_H=1720, TANK_BASE=100,  # 2 x Filtra TB 2500 (2.650 L), dimensi belum ditemukan: perkiraan Ø1,40 x 1,72 m
+    TANK_XY=(7250, 2350),       # tandon 1 (masuk), di luar dinding kasa sisi timur, EST
     TANK2_Y=800,                # tandon 2, berjajar ke selatan, disambung pipa bawah, EST
-    OUTLET_RISE=150,            # kran di atas dasar tandon, EST
-    INLET_BELOW_GUT=120,        # lubang masuk di bawah sumbu talang, supaya tidak melewati talang, EST
-    # Pipa 1 inci: keluar dasar tandon, naik, jatuh ke bibir tong. Panjang perkiraan.
-    PIPE1_R=16,                 # pipa PVC 1 inci, OD kira-kira 32 mm
-    SCREEN_R=34,                # rumah screen filter 1 inci, EST (mesh 120 dari RAB)
-    OVER_R=30, OVER_STUB=90,    # pelimpah bawaan 2 inci, moncong pendek, bukan pipa buang
+    TAP_Z=400,                  # kran keluar tandon (tinggi absolut), di atas dasar
+    ZC=1720,                    # tinggi pipa kolektor di luar = lubang masuk samping tandon, EST
     DRUM_R=290, DRUM_H=880,     # tong biru ~200 L, EST dari video
     DRUM_XY=(5620, 2560),       # sudut dalam greenhouse, EST
     RES_R=400, RES_D=600,       # bak tanam di lantai bertutup abu abu, EST
@@ -41,10 +33,6 @@ P = dict(
     PE_Z=440,                   # tinggi selang PE di atas baris ember
     WIRE_Z=1750,                # kawat horizontal untuk ajir
 )
-P["TANK_R"] = P["TANK_D"] / 2
-_ym = P["W"] / 2.0
-P["ZC"] = (P["H_EAVE"] - (P["H_RIDGE"] - P["H_EAVE"]) / _ym * P["ROOF_OVER"]
-           - P["GUT_R"] + 20 - P["INLET_BELOW_GUT"])
 
 C = dict(  # warna RGB 0..1, konsisten untuk STEP/GLB/render
     frame=(0.62, 0.65, 0.68), roof=(0.85, 0.92, 0.96), net=(0.88, 0.89, 0.90),
@@ -53,7 +41,7 @@ C = dict(  # warna RGB 0..1, konsisten untuk STEP/GLB/render
     plant=(0.30, 0.55, 0.25), melon=(0.80, 0.80, 0.56), drum=(0.10, 0.36, 0.78),
     reslid=(0.55, 0.57, 0.58), pumpbody=(0.38, 0.45, 0.55), cable=(0.05, 0.05, 0.05),
     valve=(0.85, 0.12, 0.10), hose=(0.95, 0.80, 0.15),
-    new=(0.00, 0.62, 0.58), tank=(0.07, 0.07, 0.08), filter=(0.30, 0.72, 0.86),
+    new=(0.00, 0.62, 0.58), tank=(0.09, 0.09, 0.10), filter=(0.30, 0.72, 0.86),
     table=(0.72, 0.60, 0.45), meter=(0.95, 0.75, 0.15), ground=(0.80, 0.82, 0.78),
     concrete=(0.70, 0.70, 0.68),
 )
@@ -108,15 +96,6 @@ def box(x0, y0, z0, dx, dy, dz):
 
 def cyl(x, y, z, r, h):
     return cq.Solid.makeCylinder(r, h, V(x, y, z))
-
-
-def cyl_x(x0, y, z, r, length):
-    """Silinder sepanjang +X, pangkal di x0."""
-    return cyl(0, 0, 0, r, length).rotate(V(0, 0, 0), V(0, 1, 0), 90).translate(V(x0, y, z))
-
-
-def lerp(a, b, t):
-    return tuple(a[i] + (b[i] - a[i]) * t for i in range(3))
 
 
 def build():
@@ -249,9 +228,13 @@ def build():
     drum = cq.Workplane("XY", origin=(dx_, dy_, 5)).circle(P["DRUM_R"]).extrude(P["DRUM_H"]).faces(">Z").shell(-4)
     drum = drum.union(cq.Workplane("XY", origin=(dx_, dy_, 5 + P["DRUM_H"] - 30)).circle(P["DRUM_R"] + 8).circle(P["DRUM_R"] - 2).extrude(14))
     drum = drum.union(cq.Workplane("XY", origin=(dx_, dy_, 5 + P["DRUM_H"] * 0.45)).circle(P["DRUM_R"] + 8).circle(P["DRUM_R"] - 2).extrude(14))
-    add("Tong biru ~200 L (sudah ada, terbuka)", "existing", "drum", drum)
+    add("Tong biru ~200 L (sudah ada)", "existing", "drum", drum)
     dtop = 5 + P["DRUM_H"]
-    A["drum"] = (dx_ - 180, dy_ - 80, dtop + 30)
+    A["drum"] = (dx_ - 150, dy_ - 150, dtop + 20)
+    # pipa isi PVC putih dari atas (asal belum dicek)
+    add("Pipa isi PVC putih dari atas (sudah ada)", "existing", "pvc",
+        pipe([(dx_ + 80, dy_ + 40, dtop - 150), (dx_ + 80, dy_ + 40, 1500), (dx_ + 80, W - 45, 1500), (L - 45, W - 45, 1500)], 22))
+    A["fillpipe"] = (dx_ + 80, dy_ + 40, 1250)
     # keluaran bawah tong -> ball valve gagang merah -> tutup bak lantai
     yv0 = dy_ - P["DRUM_R"] + 5
     yv1 = ry + P["RES_R"] - 70
@@ -263,7 +246,7 @@ def build():
         bar((dx_, yvb - 45, zv), (dx_, yvb + 45, zv), 30, True),
         bar((dx_, yvb, zv), (dx_, yvb, zv + 50), 7, True),
         box(dx_ - 10, yvb - 8, zv + 45, 130, 16, 10)]))
-    fl('dump', [(dx_, dy_, 280), (dx_, yv0 + 20, zv), (dx_, yv1, zv), (dx_, yv1, -150)])
+    fl('loop', [(dx_, dy_, 300), (dx_, yv0 + 20, zv), (dx_, yv1, zv), (dx_, yv1, -150)])
     A["valve"] = (dx_ + 40, yvb, zv + 50)
     # pompa celup di dalam bak + kabel hitam turun dari rangka
     add("Pompa celup (perkiraan, sudah ada)", "existing", "pumpbody", cq.Compound.makeCompound([
@@ -275,22 +258,12 @@ def build():
               (L - 45, yc, 22), (L - 45, yc, HE - 60), (L - 45, W - 45, HE - 60), (L + 120, W - 45, HE - 60)], 5))
     A["pump"] = (px, py, -P["RES_D"] + 170)
     A["cable"] = (L - 45, yc, 1100)
-    # papan SOP + meter, di dalam, di sebelah tong. Bukan meja di luar.
-    bx0, by0 = dx_ - P["DRUM_R"] - 380, dy_ - 40
-    add("Papan SOP cek EC dan pH (baru)", "new", "table", cq.Compound.makeCompound([
-        box(bx0, by0, 0, 22, 22, 640), box(bx0 + 230, by0, 0, 22, 22, 640),
-        box(bx0 - 6, by0 - 8, 640, 264, 16, 190)]))
-    add("pH meter dan EC meter (baru)", "new", "meter", cq.Compound.makeCompound([
-        box(bx0 + 36, by0 + 8, 690, 16, 24, 108), box(bx0 + 78, by0 + 8, 700, 14, 22, 96)]))
-    A["sop"] = (bx0 + 120, by0 - 20, 820)
-    # Satu jalur air sumur. Cara isi (pompa atau manual) belum dicek. Letak dan ukuran sumur perkiraan.
-    sx, sy = 5300, 3600
-    add("Sumur di luar greenhouse (letak dan ukuran perkiraan)", "existing", "concrete",
-        cq.Compound.makeCompound([cyl(sx, sy, -180, 260, 200), cyl(sx, sy, 16, 280, 28)]))
-    add("Selang air sumur ke tong biru (perkiraan, pompa atau manual)", "existing", "hose",
-        pipe([(sx, sy, 50), (sx, W + 140, 36), (dx_, W + 140, 36), (dx_, dy_ + P["DRUM_R"] - 10, 36),
-              (dx_, dy_ + P["DRUM_R"] - 20, dtop - 40)], 9))
-    A["sumur"] = (sx + 180, sy, 120)
+    # selang taman (isi manual)
+    hz = 14
+    add("Selang taman (isi manual, perkiraan)", "existing", "hose",
+        pipe([(dx_ - 220, dy_ + 120, dtop - 40), (dx_ - 330, dy_ + 160, 600), (dx_ - 380, dy_ + 200, hz), (5000, 2700, hz),
+              (5150, 2950, hz), (5700, 2960, hz), (L + 300, W + 250, hz), (L + 800, W + 450, hz)], 9))
+    A["hose"] = (L + 550, W + 350, hz)
 
     # ---------------- sistem air hujan BARU ----------------
     gz = HE - slope_dz * ro - P["GUT_R"] + 20
@@ -309,122 +282,94 @@ def build():
             kasa.append(box(x - 10, min(yg, 0) if yg < 0 else W, gz - P["GUT_R"] - 4,
                             20, abs(yg - (0 if yg < 0 else W)) + P["GUT_R"], 4))
     add("Talang PVC (baru)", "new", "new", cq.Compound.makeCompound(gl))
-    add("Kasa talang SS304 dan gantungan (baru, bukaan perkiraan)", "new", "filter", cq.Compound.makeCompound(kasa))
+    add("Kasa talang ~1 mm dan gantungan (baru)", "new", "filter", cq.Compound.makeCompound(kasa))
     A["gutter"] = (3000, -ro - 10, gz)
 
     xdp = L + ro + 80
     ys, yn = -ro - 10, W + ro + 10
     zc = P["ZC"]
     ttop = P["TANK_BASE"] + P["TANK_H"]
-    if not (P["TANK_BASE"] + P["OUTLET_RISE"] + 80 < zc < gz):
-        raise SystemExit(f"Lubang masuk z={zc:.0f} tidak di bawah talang atau tidak di atas kran. Cek TANK_BASE.")
-    if not (P["TANK_BASE"] + 80 < zc < ttop - 80):
-        raise SystemExit(f"Lubang masuk z={zc:.0f} di luar badan tandon. Turunkan TANK_BASE atau cek tinggi talang.")
-    R = P["TANK_R"]
-    xin = tx - R
-    xff = xdp
-    xmedia0 = xdp + 80
+    xff = tx - P["TANK_R"] - 150
+    xin = tx - P["TANK_R"] + 30
     dp = [
         pipe([(xdp, yn, gz - 40), (xdp, yn, zc), (xdp, ty, zc)], P["DP_R"]),
-        pipe([(xdp, ys, gz - 40), (xdp, ys, zc), (xdp, ty, zc), (xmedia0 + 30, ty, zc)], P["DP_R"]),
+        pipe([(xdp, ys, gz - 40), (xdp, ys, zc), (xdp, ty, zc), (xin, ty, zc)], P["DP_R"]),
     ]
-    add("Pipa turun 3 inci (baru)", "new", "new", cq.Compound.makeCompound(dp))
+    add("Pipa turun dan pipa ke tandon (baru)", "new", "new", cq.Compound.makeCompound(dp))
     for y0 in (yn, ys):
-        fl('rain', [(-100, y0, gz - 25), (xdp, y0, gz - 25), (xdp, y0, zc), (xff, ty, zc)])
-    fl('ff', [(xff, ty, zc - 30), (xff, ty, zc - P["FF_LEN"] + 40)])
+        fl('rain', [(-100, y0, gz - 25), (xdp, y0, gz - 25), (xdp, y0, zc), (xdp, ty, zc), (xin + 200, ty, zc), (xin + 260, ty, zc - 600)])
+    fl('ff', [(xff, ty, zc), (xff, ty, zc - P["FF_LEN"] + 50)])
     ff = [cyl(xff, ty, zc - P["FF_LEN"], P["FF_R"], P["FF_LEN"]),
           cyl(xff, ty, zc - P["FF_LEN"] - 60, P["FF_R"] + 10, 60),
           bar((xff, ty, zc - P["FF_LEN"] - 60), (xff, ty, zc - P["FF_LEN"] - 160), 10, True),
           box(xff - 30, ty - 40, zc - P["FF_LEN"] - 140, 60, 20, 20)]
     add("First flush ~9 L (baru)", "new", "new", cq.Compound.makeCompound(ff))
-    media_len = xin - xmedia0
-    add("Tabung filter media 4 inci horizontal (baru, panjang perkiraan)", "new", "filter",
-        cq.Compound.makeCompound([
-            cyl_x(xmedia0, ty, zc, P["FF_R"], media_len),
-            cyl_x(xmedia0 - 8, ty, zc, P["FF_R"] + 8, 16),
-            cyl_x(xin - 16, ty, zc, P["FF_R"] + 8, 16),
-        ]))
-    fl('fill', [(xff, ty, zc), (xin + 20, ty, zc), (tx - 180, ty, zc - 400)])
-    A["ff"] = (xmedia0 + media_len * 0.45, ty - 80, zc + 80)
+    A["ff"] = (xff, ty, zc - 500)
     ty2 = P["TANK2_Y"]
+    R = P["TANK_R"]
     for k, yy in enumerate((ty, ty2)):
-        stand = box(tx - R - 50, yy - R - 50, 0, 2 * R + 100, 2 * R + 100, P["TANK_BASE"])
-        if k == 0:
-            # celah di sisi barat dudukan supaya pipa keluar dari dasar tandon kelihatan
-            stand = stand.cut(box(tx - R - 90, ty - 55, 60, 220, 110, P["TANK_BASE"]))
-        add(f"Dudukan tandon {k + 1} (batako + semen, baru)", "new", "concrete", stand)
+        add(f"Dudukan tandon {k + 1} (batako + semen, baru)", "new", "concrete",
+            box(tx - R - 50, yy - R - 50, 0, 2 * R + 100, 2 * R + 100, P["TANK_BASE"]))
         tank = (cq.Workplane("XY", origin=(tx, yy, P["TANK_BASE"])).circle(R).extrude(P["TANK_H"])
                 .faces(">Z").edges().fillet(160))
-        add(f"Tandon {k + 1} Filtra TB 2500, 2.650 L (baru)", "new", "tank", tank)
+        add(f"Tandon {k + 1} Filtra 2.650 L (baru)", "new", "tank", tank)
         add(f"Tutup tandon {k + 1}", "new", "tank", cyl(tx, yy, ttop, 230, 45))
         add(f"Lubang angin berkasa tandon {k + 1} (baru)", "new", "new", cq.Compound.makeCompound([
             bar((tx + 300, yy + 300, ttop - 140), (tx + 300, yy + 300, ttop + 120), 20, True),
             cyl(tx + 300, yy + 300, ttop + 120, 45, 30)]))
-    A["tank"] = (tx + 420, ty - 80, 1100)
-    A["tank2"] = (tx + 420, ty2 - 200, 900)
+    A["tank"] = (tx + 500, ty - 500, 1000)
+    A["tank2"] = (tx + 500, ty2 - 500, 1000)
     A["vent"] = (tx + 300, ty + 300, ttop + 150)
-    # sambungan bawah: dua tandon satu muka air. Tanpa kran tambahan (tidak ada di RAB).
+    # sambungan bawah antar tandon: dua tandon jadi satu muka air
     yl1 = ty - math.sqrt(R ** 2 - 300 ** 2)
     yl2 = ty2 + math.sqrt(R ** 2 - 300 ** 2)
-    zl = P["TANK_BASE"] + P["OUTLET_RISE"]
-    add("Pipa sambung bawah antar tandon (baru)", "new", "new",
-        pipe([(tx + 300, yl1 + 15, zl), (tx + 300, yl2 - 15, zl)], 25))
-    A["link"] = (tx + 360, (yl1 + yl2) / 2, zl + 40)
-    fl('link', [(tx + 300, yl1 - 40, zl), (tx + 300, yl2 + 40, zl)])
-    # Pelimpah bawaan 2 inci: moncong pendek di tinggi lubang masuk. Tanpa pipa buang.
-    over_z = zc - 40
-    ox0, ox1 = tx + R - 8, tx + R - 8 + P["OVER_STUB"]
-    add("Pelimpah 2 inci bawaan tandon (baru)", "new", "new",
-        pipe([(ox0, ty, over_z), (ox1, ty, over_z)], P["OVER_R"]))
-    fl('over', [(ox0 - 30, ty, over_z), (ox1, ty, over_z)])
-    A["over"] = (ox1 + 40, ty, over_z + 40)
-    # Pipa 1 inci: dasar tandon > kran > filter housing > naik > jatuh ke bibir tong.
-    # Panjang mengikuti letak (perkiraan), bukan angka RAB.
-    z_low = 320
-    z_crest = dtop + 90
-    p0 = (tx - R + 80, ty, P["TANK_BASE"])          # mulut di dasar tandon, dekat tepi barat
-    p1 = (p0[0], ty, z_low)                          # turun di bawah dasar
-    p2 = (tx - R - 220, ty + 30, z_low)              # keluar dari celah dudukan
-    p_valve = lerp(p1, p2, 0.55)
-    p3 = (6220, dy_ - 20, z_low)                     # tengah jalur, kepala filter
-    p3b = (6100, dy_ - 8, z_low)                     # keluar dari kepala filter
-    p4 = (6040, dy_, z_low)
-    p5 = (6040, dy_, z_crest)                        # naik di atas bibir tong
-    p6 = (dx_, dy_, z_crest)
-    p7 = (dx_, dy_, dtop - 60)                       # jatuh ke dalam tong yang terbuka
-    r1 = P["PIPE1_R"]
-    add("Pipa PVC 1 inci tandon ke tong biru (baru, panjang perkiraan)", "new", "new", cq.Compound.makeCompound([
-        pipe([p0, p1, p2, p3], r1),
-        pipe([p3b, p4, p5, p6, p7], r1)]))
-    add("Kran tandon 1 inci (baru)", "new", "valve", cq.Compound.makeCompound([
-        pipe([lerp(p1, p2, 0.28), lerp(p1, p2, 0.72)], 26),
-        bar(p_valve, (p_valve[0], p_valve[1], p_valve[2] + 78), 7, True),
-        box(p_valve[0] - 8, p_valve[1] - 36, p_valve[2] + 70, 16, 72, 12)]))
-    fx, fy, fz = p3
-    add("Screen filter 1 inci 120 mesh (baru)", "new", "filter", cq.Compound.makeCompound([
-        cyl(fx, fy, fz - 270, 68, 250),
-        cyl(fx, fy, fz - 28, 86, 64)]))
-    p_tap = lerp(p4, p5, 0.18)
-    p_tap_end = (p_tap[0] - 70, p_tap[1], p_tap[2])
-    add("Kran sampel pada pipa 1 inci (baru)", "new", "valve", cq.Compound.makeCompound([
-        pipe([p_tap, p_tap_end], 8),
-        bar(p_tap_end, (p_tap_end[0], p_tap_end[1], p_tap_end[2] + 36), 5, True)]))
-    A["tap"] = (p_valve[0], p_valve[1] - 20, p_valve[2] + 90)
-    A["filter"] = (fx, fy - 90, fz - 80)
-    A["sample"] = (p_tap_end[0], p_tap_end[1] - 30, p_tap_end[2] + 20)
-    fl('out', [p0, p1, p2, p3, p4, p5, p6, p7])
-    nominal = 5300.0
-    l_per_mm = nominal / P["TANK_H"]
-    usable = l_per_mm * (zc - P["TANK_BASE"])
-    # Air di bawah bibir tong tidak bisa naik sendiri lewat pipa yang jatuh dari atas.
-    dead = l_per_mm * (z_crest - P["TANK_BASE"])
-    SIM.update(tanks=[(tx, ty), (tx, ty2)], R=R - 10, base=P["TANK_BASE"],
-               nominal_l=nominal, usable_l=round(usable, 1), dead_l=round(dead, 1),
-               l_per_mm=round(l_per_mm, 4), inlet_frac=(zc - P["TANK_BASE"]) / P["TANK_H"],
-               ff_l=9, roof_m2=18, coef=0.8, use_lpd=64.4, tong_l=200, bak_l=200,
-               tong=dict(x=dx_, y=dy_, z=12, r=P["DRUM_R"] - 18, h=P["DRUM_H"] - 36),
-               bak=dict(x=rx, y=ry, z=-P["RES_D"] + 36, r=P["RES_R"] - 40, h=P["RES_D"] - 70),
-               roof=dict(x0=-ro, x1=L + ro, y0=-ro, y1=W + ro, he=HE, hr=HR))
+    zl = P["TANK_BASE"] + 160
+    add("Pipa sambung antar tandon + stop kran (baru)", "new", "new", cq.Compound.makeCompound([
+        pipe([(tx + 300, yl1 + 20, zl), (tx + 300, yl2 - 20, zl)], 25),
+        box(tx + 270, (yl1 + yl2) / 2 - 30, zl + 20, 60, 60, 50)]))
+    A["link"] = (tx + 300, (yl1 + yl2) / 2, zl + 60)
+    fl('link', [(tx + 300, yl1 - 60, zl), (tx + 300, yl2 + 60, zl)])
+    xo = tx + R + 200
+    add("Pipa pelimpah (baru)", "new", "new",
+        pipe([(tx + R - 20, ty, ttop - 130), (xo, ty, ttop - 130), (xo, ty, 120), (xo + 150, ty, 120)], 25))
+    fl('over', [(tx + R - 40, ty, ttop - 130), (xo, ty, ttop - 130), (xo, ty, 120), (xo + 260, ty, 60)])
+    SIM.update(tanks=[(tx, ty), (tx, ty2)], R=R - 12, base=P["TANK_BASE"] + 8, h_over=P["TANK_H"] - 130 - 8,
+               ff_l=9, roof_m2=18, coef=0.8, use_lpd=64.4, roof=dict(x0=-ro, x1=L + ro, y0=-ro, y1=W + ro, he=HE, hr=HR))
+    A["over"] = (xo, ty, 900)
+    # kran keluar -> filter -> masuk greenhouse -> tutup bak lantai
+    yt = ty - 300
+    xt = tx - math.sqrt(P["TANK_R"] ** 2 - 300 ** 2)
+    tz = P["TAP_Z"]
+    xf, yf = L + 260, yt
+    yin2 = ry + 150
+    xin2 = rx + 240
+    add("Kran keluar di atas dasar (baru)", "new", "new", cq.Compound.makeCompound([
+        pipe([(xt + 20, yt, tz), (xf, yt, tz)], 20),
+        box(xt - 120, yt - 30, tz + 20, 40, 60, 60),
+        bar((xt - 100, yt, tz + 80), (xt - 100, yt - 120, tz + 80), 8, True)]))
+    A["tap"] = (xt - 100, yt, tz + 60)
+    add("Housing filter 120 sampai 200 mesh (baru)", "new", "filter", cq.Compound.makeCompound([
+        cyl(xf, yf, tz - 320, 70, 300), cyl(xf, yf, tz - 20, 85, 60)]))
+    A["filter"] = (xf, yf, tz - 170)
+    add("Pipa ke bak lantai (baru)", "new", "new",
+        pipe([(xf, yf, tz), (xf, yin2, tz), (xin2, yin2, tz), (xin2, yin2, 10)], 20))
+    add("Kran sampel (baru)", "new", "new", bar((xf, yin2, tz), (xf, yin2, tz - 120), 10, True))
+    fl('out', [(xt + 20, yt, tz), (xf, yt, tz), (xf, yin2, tz), (xin2, yin2, tz), (xin2, yin2, -150)])
+    # meja cek pH dan TDS, di luar sisi timur
+    TX, TY = L + 150, W + 550
+    tb = [box(TX, TY, 720, 600, 450, 30)]
+    for lx in (TX + 20, TX + 550):
+        for ly in (TY + 20, TY + 400):
+            tb.append(box(lx, ly, 0, 30, 30, 720))
+    tb.append(box(TX + 20, TY + 20, 250, 560, 410, 15))
+    add("Meja cek air (baru)", "new", "table", cq.Compound.makeCompound(tb))
+    add("pH meter, TDS pen, gelas sampel (baru)", "new", "meter", cq.Compound.makeCompound([
+        box(TX + 100, TY + 100, 750, 70, 35, 170), cyl(TX + 250, TY + 120, 750, 12, 160),
+        cyl(TX + 430, TY + 150, 750, 40, 100), box(TX + 200, TY + 250, 750, 250, 120, 120)]))
+    A["table"] = (TX + 300, TY + 225, 870)
+    # tutup tong: perubahan yang diusulkan (aslinya terbuka)
+    add("Tutup tong (usulan, aslinya terbuka)", "new", "new", cq.Compound.makeCompound([
+        cyl(dx_, dy_, dtop, P["DRUM_R"] + 15, 20).cut(cyl(dx_ + 80, dy_ + 40, dtop - 10, 30, 50)).cut(cyl(dx_ - 220, dy_ + 120, dtop - 10, 16, 50))]))
 
     ground = box(-1500, -1500, -40, 10500, 6500, 40).cut(hole)
     add("Tanah", "site", "ground", ground)
