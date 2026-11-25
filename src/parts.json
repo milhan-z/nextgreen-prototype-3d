@@ -21,7 +21,6 @@
   "TANK2_Y": 800,
   "OUTLET_RISE": 150,
   "INLET_BELOW_GUT": 120,
-  "TONG_INLET_Z": 180,
   "PIPE1_R": 16,
   "SCREEN_R": 34,
   "OVER_R": 30,
@@ -268,7 +267,7 @@
    "color": "new"
   },
   {
-   "name": "Pipa PVC 1 inci tandon ke tong biru (baru)",
+   "name": "Pipa PVC 1 inci tandon ke tong biru (baru, panjang perkiraan)",
    "group": "new",
    "color": "new"
   },

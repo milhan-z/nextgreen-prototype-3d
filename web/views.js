@@ -12,5 +12,5 @@ export default {
     off: { 3: [-360, -210], 4: [300, -200], 5: [300, 190], 6: [-280, 16], 7: [-340, -100], d: [-250, 160], s: [270, 70] } },
   corner: { pos: [4.15, 2.15, -0.35], tgt: [5.7, 0.25, -2.25], fov: 40, show: [5, 6, 7, 'e', 'f', 'g', 'h'], hide: ['cover', 'reslid', 'plant'],
     off: { 5: [240, -140], 6: [-280, -80], 7: [-300, -20], e: [-340, 40], f: [-300, 170], g: [280, 80], h: [-240, 80] },
-    note: 'Sudut tong: atap, kasa, tanaman, dan tutup bak disembunyikan. Pipa 1 inci masuk samping bawah tong.' },
+    note: 'Sudut tong: atap, kasa, tanaman, dan tutup bak disembunyikan. Pipa 1 inci jatuh dari atas ke dalam tong.' },
 };

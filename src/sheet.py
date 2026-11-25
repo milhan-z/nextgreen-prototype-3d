@@ -132,7 +132,7 @@ rows = [
     ("2", "Talang + kasa SS304", "PVC, dua sisi panjang,\nbukaan kasa perkiraan", "Baru"),
     ("3", "First flush + tabung 4 inci", "9 L dibuang, lalu tabung\nmedia 4 inci horizontal", "Baru"),
     ("4", "2 tandon Filtra TB 2500", "2 x 2.650 L, hitam, Ø1,415 x 1,86 m,\npipa bawah, pelimpah 2 inci bawaan", "Baru"),
-    ("5", "Pipa 1 inci ke tong biru", "kran tandon, screen filter 120 mesh,\nkran sampel, masuk samping bawah", "Baru"),
+    ("5", "Pipa 1 inci ke tong biru", "keluar dasar tandon, kran, filter,\njatuh ke atas tong. Panjang perkiraan", "Baru"),
     ("6", "Cek EC dan pH di tong biru", "meter + papan SOP di sebelah tong,\nbukan meja di luar", "Baru"),
     ("7", "Campur AB mix di tong biru", "tong terbuka (sudah ada),\nball valve ke bak saat bak habis", "Ada"),
     ("8", "Ke tanaman (Dutch Bucket, tetes)", "pompa celup + PE 16 mm yang ada,\nbalik lewat pipa PVC ~2 inch", "Ada"),

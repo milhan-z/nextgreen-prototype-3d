@@ -33,7 +33,7 @@ Warna toska di model = bagian baru (ada di RAB). Biru tua dan putih = yang sudah
 2. Talang PVC + kasa SS304 di kedua sisi panjang (baru). Bukaan kasa perkiraan.
 3. Pipa turun 3 inci (baru) ke first flush sekitar 9 L, lalu tabung filter media 4 inci yang tidur (horizontal).
 4. Dua tandon tertutup Filtra TB 2500, hitam, masing-masing 2.650 L, Ø1,415 m, tinggi 1,86 m (spek). Disambung pipa bawah jadi satu muka air. Dudukan batako. Pelimpah hanya moncong bawaan 2 inci, tanpa pipa buang. Lubang angin berkasa.
-5. Kran tandon, screen filter 1 inci 120 mesh, dan kran sampel pada pipa PVC 1 inci yang pendek. Pipa masuk tong biru dari samping bawah, supaya air tandon bisa turun sendiri sampai muka airnya hampir sama dengan tong.
+5. Pipa PVC 1 inci keluar dari dasar tandon, lewat kran, lalu housing filter 1 inci 120 mesh di tengah jalur, lalu naik dan jatuh ke dalam tong biru dari atas bibir. Kran ditutup setelah tong terisi, sebelum AB mix. Panjang jalur ini perkiraan, menunggu ukur di lapangan (boleh beda dari angka pipa di RAB).
 6. Tong biru (sudah ada, terbuka) tempat AB mix. EC dan pH dicek di sini. Ada papan SOP di sebelah tong.
 7. Ball valve tong dibuka hanya saat bak habis. Larutan turun ke bak bawah tanah (sudah ada).
 8. Pompa celup yang sudah ada mendorong air ke tetes, lalu kembali ke bak lewat pipa balik.
@@ -53,7 +53,8 @@ Yang dipakai dari sumber, bukan tebakan:
 Yang masih perkiraan, belum diukur di lapangan:
 - Tinggi tepi sekitar 1,9 m, bubungan sekitar 2,6 m, jarak tiang sekitar 1,2 m, profil rangka 40 mm. Sumbu talang di model jatuh di sekitar 1,82 m.
 - Dudukan tandon 0,40 m. Angka ini satu konstanta, `TANK_BASE` di `src/model.py`, di tengah rentang 0,3 sampai 0,5 m. Lubang masuk dihitung 0,12 m di bawah sumbu talang (sekitar 1,70 m), jadi bagian atas tandon tidak terisi. Kalau dudukan diubah, lubang masuk tetap di bawah talang selama masih mengenai badan tandon.
-- Dengan dudukan 0,40 m, simulasi mengisi sampai sekitar 3.700 L dari nominal 5.300 L. Sekitar 430 L di bawah kran tidak mengalir sendiri. Dua angka ini perkiraan dari tinggi, bukan hasil ukur.
+- Dengan dudukan 0,40 m, simulasi mengisi sampai sekitar 3.700 L dari nominal 5.300 L, karena lubang masuk ada di bawah talang. Pipa ke tong jatuh dari atas, jadi air di bawah bibir tong (sekitar 1.600 L, perkiraan) tidak bisa naik sendiri. Angka ini dari tinggi, bukan hasil ukur.
+- Panjang pipa 1 inci dari dasar tandon ke atas tong belum diukur. Yang digambar kira-kira 2 sampai 3 m, mengikuti letak tandon dan tong di model.
 - Tong sekitar 200 L (Ø0,58 x 0,88 m). Volume bak belum diukur. Simulasi memakai 200 L sebagai satu isi bak, sama dengan satu isi tong.
 - Volume air sumur yang ditambahkan tiap batch belum diukur. Simulasi menganggap tong penuh dari tandon, jadi tandon kelihatan lebih cepat habis daripada kalau dicampur air sumur.
 - Panjang tabung filter 4 inci mengikuti jarak pipa turun ke tandon, bukan angka pabrik. Letak tandon, sumur, bak, dan pompa celup juga perkiraan dari video.
