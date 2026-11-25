@@ -131,9 +131,9 @@ rows = [
     ("2", "Talang + kasa ~1 mm", "PVC, dua sisi panjang", "Baru"),
     ("3", "First flush (~9 L dibuang)", "0,5 L per m² atap, pipa Ø110", "Baru"),
     ("4", "2 tandon tertutup", "Filtra 2 x 2.650 L, disambung pipa bawah,\npelimpah, lubang angin, kran di atas dasar", "Baru"),
-    ("5", "Filter 120 sampai 200 mesh", "housing sebelum ke bak lantai", "Baru"),
+    ("5", "Filter 120 sampai 200 mesh", "housing sebelum ke tong biru", "Baru"),
     ("6", "Cek pH dan TDS", "pH meter + TDS pen di meja", "Baru"),
-    ("7", "Campur AB mix di tong/bak yang ada", "tong ~200 L sekarang terbuka,\nusulan: diberi tutup", "Ada"),
+    ("7", "Campur AB mix di tong biru", "air tandon masuk samping bawah\ntong lewat stop kran", "Ada"),
     ("8", "Ke tanaman (Dutch Bucket, tetes)", "pompa celup + PE 16 mm yang ada,\nbalik lewat pipa PVC ~2 inch", "Ada"),
 ]
 ax.text(BX, BY + 2, "DAFTAR KOMPONEN", fontsize=10, weight="bold", color=INK, va="bottom")
@@ -185,7 +185,7 @@ ax.add_patch(Rectangle((14, 16), 196, 12, fill=False, ec=INK, lw=0.4))
 # ---------------- ALUR AIR ----------------
 FX, FY = 214, 98
 ax.text(FX, FY + 1.5, "ALUR AIR HUJAN", fontsize=9, weight="bold", va="bottom")
-steps = ["Atap 18 m²", "Talang + kasa", "First flush\n~9 L dibuang", "2 tandon\n2 x 2.650 L", "Filter 120\nsampai 200 mesh", "Cek pH dan TDS", "Campur AB mix\ndi tong/bak", "Ke tanaman\n(tetes)"]
+steps = ["Atap 18 m²", "Talang + kasa", "First flush\n~9 L dibuang", "2 tandon\n2 x 2.650 L", "Filter 120\nsampai 200 mesh", "Cek pH dan TDS", "Campur AB mix\ndi tong biru", "Ke tanaman\n(tetes)"]
 bw_, bh_, gap = 42, 11, 7
 for i, t in enumerate(steps):
     r, c = divmod(i, 4)

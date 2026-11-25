@@ -23,6 +23,7 @@ P = dict(
     ZC=1720,                    # tinggi pipa kolektor di luar = lubang masuk samping tandon, EST
     DRUM_R=290, DRUM_H=880,     # tong biru ~200 L, EST dari video
     DRUM_XY=(5620, 2560),       # sudut dalam greenhouse, EST
+    DRUM_IN_Z=180,              # lubang masuk air tandon di samping bawah tong (usulan), EST
     RES_R=400, RES_D=600,       # bak tanam di lantai bertutup abu abu, EST
     RES_XY=(5500, 1750),
     ROWS=(850, 2150), N_PER_ROW=12, X0=450, DX=380,  # 24 ember ditampilkan (aslinya ~60 sampai 66)
@@ -336,13 +337,14 @@ def build():
     SIM.update(tanks=[(tx, ty), (tx, ty2)], R=R - 12, base=P["TANK_BASE"] + 8, h_over=P["TANK_H"] - 130 - 8,
                ff_l=9, roof_m2=18, coef=0.8, use_lpd=64.4, roof=dict(x0=-ro, x1=L + ro, y0=-ro, y1=W + ro, he=HE, hr=HR))
     A["over"] = (xo, ty, 900)
-    # kran keluar -> filter -> masuk greenhouse -> tutup bak lantai
+    # kran keluar -> filter -> masuk greenhouse -> sisi bawah tong biru (air baku, AB mix dicampur di tong)
     yt = ty - 300
     xt = tx - math.sqrt(P["TANK_R"] ** 2 - 300 ** 2)
     tz = P["TAP_Z"]
     xf, yf = L + 260, yt
-    yin2 = ry + 150
-    xin2 = rx + 240
+    zi = P["DRUM_IN_Z"]                 # lubang masuk samping bawah tong, di bawah kran tandon supaya gravitasi jalan
+    xd = dx_ + P["DRUM_R"]              # dinding timur tong
+    yd = dy_
     add("Kran keluar di atas dasar (baru)", "new", "new", cq.Compound.makeCompound([
         pipe([(xt + 20, yt, tz), (xf, yt, tz)], 20),
         box(xt - 120, yt - 30, tz + 20, 40, 60, 60),
@@ -351,10 +353,14 @@ def build():
     add("Housing filter 120 sampai 200 mesh (baru)", "new", "filter", cq.Compound.makeCompound([
         cyl(xf, yf, tz - 320, 70, 300), cyl(xf, yf, tz - 20, 85, 60)]))
     A["filter"] = (xf, yf, tz - 170)
-    add("Pipa ke bak lantai (baru)", "new", "new",
-        pipe([(xf, yf, tz), (xf, yin2, tz), (xin2, yin2, tz), (xin2, yin2, 10)], 20))
-    add("Kran sampel (baru)", "new", "new", bar((xf, yin2, tz), (xf, yin2, tz - 120), 10, True))
-    fl('out', [(xt + 20, yt, tz), (xf, yt, tz), (xf, yin2, tz), (xin2, yin2, tz), (xin2, yin2, -150)])
+    add("Pipa ke tong biru (baru)", "new", "new",
+        pipe([(xf, yf, tz), (xf, yd, tz), (xd + 140, yd, tz), (xd + 140, yd, zi), (xd - 6, yd, zi)], 20))
+    add("Stop kran masuk tong (baru)", "new", "new", cq.Compound.makeCompound([
+        box(xd + 40, yd - 30, zi - 30, 60, 60, 60),
+        bar((xd + 70, yd, zi + 30), (xd + 70, yd + 120, zi + 30), 8, True)]))
+    A["drumin"] = (xd + 70, yd, zi + 40)
+    add("Kran sampel (baru)", "new", "new", bar((xf, yd, tz), (xf, yd, tz - 120), 10, True))
+    fl('out', [(xt + 20, yt, tz), (xf, yt, tz), (xf, yd, tz), (xd + 140, yd, tz), (xd + 140, yd, zi), (xd - 60, yd, zi)])
     # meja cek pH dan TDS, di luar sisi timur
     TX, TY = L + 150, W + 550
     tb = [box(TX, TY, 720, 600, 450, 30)]

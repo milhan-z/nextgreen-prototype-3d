@@ -31,9 +31,9 @@ Simulasinya kasar, buat ilustrasi, bukan hasil ukur.
 2. Talang PVC + kasa kira kira 1 mm di kedua sisi panjang (baru)
 3. First flush kira kira 9 L dibuang per greenhouse (0,5 L per m² x 18 m², acuan UNDP 2016)
 4. Dua tandon tertutup Filtra TB 2500 (2 × 2.650 L), disambung pipa bawah, dengan pelimpah, lubang angin berkasa, kran di atas dasar (baru)
-5. Filter 120 sampai 200 mesh sebelum masuk bak (baru)
+5. Filter 120 sampai 200 mesh, lalu pipa masuk ke samping bawah tong biru lewat stop kran (baru)
 6. Cek pH dan TDS (baru)
-7. Campur AB mix di tong/bak yang sudah ada
+7. Campur AB mix di tong biru yang sudah ada. Saat ember/bak di bawah habis, kran tong dibuka ke bak lantai untuk sirkulasi
 8. Ke tanaman lewat pompa dan tetes yang sudah ada
 
 Harga nggak ada di sini. Rincian biaya ada di lembar RAB terpisah.

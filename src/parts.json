@@ -27,6 +27,7 @@
    5620,
    2560
   ],
+  "DRUM_IN_Z": 180,
   "RES_R": 400,
   "RES_D": 600,
   "RES_XY": [
@@ -256,7 +257,12 @@
    "color": "filter"
   },
   {
-   "name": "Pipa ke bak lantai (baru)",
+   "name": "Pipa ke tong biru (baru)",
+   "group": "new",
+   "color": "new"
+  },
+  {
+   "name": "Stop kran masuk tong (baru)",
    "group": "new",
    "color": "new"
   },

@@ -11,3 +11,8 @@ Ini yang aku lihat dari video greenhouse yang aktif. Semua ukuran di bawah ini p
 - Ada selang taman di lantai, kemungkinan buat isi manual dari sumur atau keran (perkiraan, belum dicek).
 - Di luar dinding kasa dekat pojok tong kelihatan ada area datar, jadi tandon aku taruh di situ (luasnya belum diukur).
 - Aku nggak bikin klaim apa pun soal kondisi tanaman di video. Itu perlu ditanyakan langsung ke mitra.
+
+## Konfirmasi Pak Aji (WhatsApp, 24 Nov 2026)
+- Sumur ada di luar greenhouse.
+- AB mix dicampur di tong biru. Bak di dekat tong biru untuk sirkulasi nutrisi ke tanaman. Kalau ember atau bak di bawah habis, kran tong biru dibuka.
+- Perawatan greenhouse dari kas KWT.
