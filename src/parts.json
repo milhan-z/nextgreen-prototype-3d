@@ -27,6 +27,11 @@
    5620,
    2560
   ],
+  "WELL_XY": [
+   7350,
+   3750
+  ],
+  "WELL_R": 400,
   "DRUM_IN_Z": 180,
   "RES_R": 400,
   "RES_D": 600,
@@ -147,9 +152,14 @@
    "color": "drum"
   },
   {
-   "name": "Pipa isi PVC putih dari atas (sudah ada)",
+   "name": "Pipa air sumur ke tong, dari atas (dugaan, sudah ada)",
    "group": "existing",
    "color": "pvc"
+  },
+  {
+   "name": "Sumur (letak dan ukuran perkiraan, sudah ada)",
+   "group": "existing",
+   "color": "concrete"
   },
   {
    "name": "Pipa keluar tong ke bak (sudah ada)",

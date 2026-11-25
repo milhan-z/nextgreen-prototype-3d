@@ -23,6 +23,7 @@ P = dict(
     ZC=1720,                    # tinggi pipa kolektor di luar = lubang masuk samping tandon, EST
     DRUM_R=290, DRUM_H=880,     # tong biru ~200 L, EST dari video
     DRUM_XY=(5620, 2560),       # sudut dalam greenhouse, EST
+    WELL_XY=(7350, 3750), WELL_R=400,  # sumur di luar sisi utara-timur: letak dan ukuran perkiraan
     DRUM_IN_Z=180,              # lubang masuk air tandon di samping bawah tong (usulan), EST
     RES_R=400, RES_D=600,       # bak tanam di lantai bertutup abu abu, EST
     RES_XY=(5500, 1750),
@@ -232,10 +233,17 @@ def build():
     add("Tong biru ~200 L (sudah ada)", "existing", "drum", drum)
     dtop = 5 + P["DRUM_H"]
     A["drum"] = (dx_ - 150, dy_ - 150, dtop + 20)
-    # pipa isi PVC putih dari atas (asal belum dicek)
-    add("Pipa isi PVC putih dari atas (sudah ada)", "existing", "pvc",
-        pipe([(dx_ + 80, dy_ + 40, dtop - 150), (dx_ + 80, dy_ + 40, 1500), (dx_ + 80, W - 45, 1500), (L - 45, W - 45, 1500)], 22))
-    A["fillpipe"] = (dx_ + 80, dy_ + 40, 1250)
+    # pipa isi PVC putih dari atas: diduga dari sumur di luar greenhouse (Pak Aji 24 Nov: sumur di luar).
+    # Letak dan ukuran sumur perkiraan, cara angkat air (pompa atau manual) belum dicek.
+    wx, wy = P["WELL_XY"]
+    x0, y0 = dx_ + 80, dy_ + 40
+    add("Pipa air sumur ke tong, dari atas (dugaan, sudah ada)", "existing", "pvc",
+        pipe([(x0, y0, dtop - 150), (x0, y0, 1500), (x0, W + 300, 1500), (x0, W + 300, 900),
+              (wx, W + 300, 900), (wx, wy, 900), (wx, wy, 350)], 22))
+    add("Sumur (letak dan ukuran perkiraan, sudah ada)", "existing", "concrete",
+        cq.Workplane("XY", origin=(wx, wy, 0)).circle(P["WELL_R"]).circle(P["WELL_R"] - 70).extrude(700).val())
+    A["well"] = (wx + P["WELL_R"], wy, 500)
+    A["fillpipe"] = (x0, W + 300, 1200)
     # keluaran bawah tong -> ball valve gagang merah -> tutup bak lantai
     yv0 = dy_ - P["DRUM_R"] + 5
     yv1 = ry + P["RES_R"] - 70

@@ -3,6 +3,7 @@
 ## Rev 3.1 (25 Nov 2026)
 - Model dikembalikan ke rev 3 (tandon di dudukan rendah, belum ditinggikan). Perubahan alur batch dari 24 sampai 25 Nov dibatalkan.
 - Warna tandon diganti dari oranye ke hitam.
+- Pipa putih dari atas tong disambung ke sumur di luar greenhouse (letak dan ukuran sumur perkiraan, sumbernya masih dugaan).
 - Air dari tandon sekarang masuk ke tong biru (lewat filter dan stop kran di samping bawah tong), bukan langsung ke bak lantai. Sesuai jawaban Pak Aji 24 Nov: AB mix dicampur di tong biru, bak lantai untuk sirkulasi.
 
 ## Rev 3 (16 Nov 2026)

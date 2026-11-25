@@ -215,7 +215,8 @@ const CALL = [
   { id: 'g', t: 'Ball valve gagang merah (sudah ada)', s: '', a: G.valve, sub: true },
   { id: 'h', t: 'Pipa balik PVC putih (sudah ada)', s: '', a: G.ret, sub: true },
   { id: 'i', t: 'Kabel pompa turun dari rangka (sudah ada)', s: '', a: G.cable, sub: true },
-  { id: 'j', t: 'Pipa isi PVC dari atas (sudah ada)', s: '', a: G.fillpipe, sub: true },
+  { id: 'j', t: 'Pipa air sumur ke tong (dugaan, sudah ada)', s: '', a: G.fillpipe, sub: true },
+  { id: 'l', t: 'Sumur di luar greenhouse (letak perkiraan)', s: '', a: G.well, sub: true },
 ];
 const overlay = document.getElementById('labels');
 const svg = document.getElementById('leaders');
