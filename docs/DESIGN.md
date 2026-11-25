@@ -17,7 +17,7 @@ Dial: ENERGY 1 / RHYTHM 1 / MOTION 2
 - Ink #16212b: teks utama.
 - Navy #004890: warna navy logo ACC, dipakai untuk tombol sudut pandang yang aktif.
 - Teal #00857e: warna "komponen baru" yang sudah dipakai di model sejak rev 1. Sengaja bukan hijau supaya tidak tertukar dengan daun melon.
-- Oranye #ed8019: warna asli tandon Filtra (dan oranye logo), hanya muncul di tandon dan pengukur isi.
+- Hitam #1a1c1e: kedua tandon Filtra TB 2500. Pengukur isi di panel memakai garis tepi hitam yang sama. Air di dalam tetap biru.
 - Biru air #0b6aa8: hanya untuk hal yang berhubungan dengan air hujan (tombol hujan aktif, isi tandon). Versi lebih gelap dari biru aliran supaya teks putih lolos kontras.
 - Latar #e9ecef rata: abu muda netral seperti kertas gambar, tanpa gradasi atau sorotan.
 
